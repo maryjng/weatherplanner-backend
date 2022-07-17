@@ -4,16 +4,16 @@ const {
   BadRequestError,
   UnauthorizedError,
 } = require("../expressError");
-
+const { sqlForPartialUpdate } = require("../helpers/sql");
 
 class Appointments {
     // dateStart and end are Date objects
-    static async add({ name, dateStart, dateEnd, description }) {
+    static async add({ name, dateStart, dateEnd, description, user_id }) {
         const result = await db.query(
             `INSERT INTO appointments
-            (name, dateStart, dateEnd, description)
+            (name, dateStart, dateEnd, description, user_id)
             values ($1, $2, $3, $4)
-            RETURNING (id, name, dateStart, dateEnd, description)`, [name, dateStart, dateEnd, description]);
+            RETURNING (id, name, dateStart, dateEnd, description, user_id)`, [name, dateStart, dateEnd, description, user_id]);
         const appt = result.rows[0]
         return appt;
     }
@@ -22,7 +22,7 @@ class Appointments {
     //get appt by id. Throws NotFoundError if not found
     static async get(id) {
         const result = await db.query(
-            `SELECT name, dateStart, dateEnd, description
+            `SELECT name, dateStart, dateEnd, description, user_id
             FROM appointments
             WHERE id=$1`, [id]
         );
@@ -34,17 +34,20 @@ class Appointments {
 
 
     // updates appt by id
-    // takes id, name, dateStart, dateEnd, description }
+    // takes id, data where data can include { name, dateStart, dateEnd, description }
     // returns { name, dateStart, dateEnd, description }
-    static async update(id, name, dateStart, dateEnd, description) {
-        const result = await db.query(
-            `UPDATE appointments
-            SET name=$1, dateStart=$2, dateEnd=$3, description=$4
-            WHERE id=$5
-            RETURNING (name, dateStart, dateEnd, description)`, [name, dateStart, dateEnd, description, id]
-        );
+    static async update(id, data) {
+        const { setCols, values } = sqlForPartialUpdate(data)
+        const handleVarIdx = "$" + (values.length + 1);
+
+        const sqlQuery = `UPDATE appointments
+                            SET ${setCols}
+                            WHERE id = ${id}
+                            RETURNING name, dateStart, dateEnd, description, user_id`
+        const result = await db.query(sqlQuery, [...values, id]);
+        const appt = result.rows[0]
     
-        if (!result) throw new NotFoundError(`No appointment by ${id} exists.`)
+        if (!appt) throw new NotFoundError(`No appointment by ${id} exists.`)
 
         return result.rows[0]
     }
@@ -56,11 +59,12 @@ class Appointments {
             WHERE id=$1
             RETURNING name`, [id]
         );
+        const appt = result.rows[0]
 
-        if (!result) throw new NotFoundError(`No appointment by ${id} exists.`)
+        if (!appt) throw new NotFoundError(`No appointment by ${id} exists.`)
 
-        return result.rows[0]
+        return appt;
     }
 }
 
-module.exports = Appointment;
+module.exports = Appointments;

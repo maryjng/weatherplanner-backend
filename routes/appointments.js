@@ -1,24 +1,25 @@
 const jsonschema = require("jsonschema");
 
 const { BadRequestError } = require("../expressError");
+const { ensureCorrectUser} = require("../middleware/auth")
 const express = require("express");
 const Appointment = require("../models/appointments");
 const router = new express.Router();
 
-//save new appt in db. 
+// POST new appt in db. 
 // Expects { name, dateStart, dateEnd, description} 
 // returns { id, name, dateStart, dateEnd, description }
 router.post("/", async function(req, res, next) {
     try {
         let results = await Appointment.add(req.body)
-        return res.send(results)
+        return res.status(201).json(results)
     } catch (error) {
         return next(error)
     }
 })
 
 
-// gets appointment by id 
+// GET appointment by id 
 // returns { name, dateStart, dateEnd, description }
 router.get("/:id", async function(req, res, next) {
     try {
@@ -30,22 +31,22 @@ router.get("/:id", async function(req, res, next) {
 })
 
 
-// updates appointment 
-// ADD SQLFORPARTIALUPDATE AND COMPLETE THIS ***
-router.update("/:id", async function(req, res, next) {
+// PATCH appointment 
+router.patch("/:id", ensureCorrectUser, async function(req, res, next) {
     try {
-        let result = await Appointment.update()
+        let result = await Appointment.update(req.params.id, req.body)
+        return res.json({ result })
     } catch (error) {
         return next(error)
     }
 })
 
 
-//deletes appointment
-router.delete("/:id", async function(req, res, next) {
+//DELETE appointment
+router.delete("/:id", ensureCorrectUser, async function(req, res, next) {
     try {
-        let result = await Appointment.delete(req.params.id)
-        return res.send(result)
+        await Appointment.delete(req.params.id)
+        return res.json({ deleted: req.params.id })
     } catch (error) {
         return next(error)
     }

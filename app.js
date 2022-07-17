@@ -7,6 +7,7 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const appointmentsRoutes = require("./routes/appointments");
 const usersRoutes = require("./routes/users");
+const apiRoutes = require("./routes/api");
 
 const morgan = require('morgan');
 
@@ -17,9 +18,10 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
 
-app.use('/api', require('./routes/api.route'));
-app.use('/appointments', require("./routes/appointments"))
-app.use('/user', require("./routes/user"))
+app.use("/auth", authRoutes);
+app.use('/api', apiRoutes);
+app.use('/appointments', appointmentsRoutes)
+app.use('/user', usersRoutes)
 
 
 app.use(function (err, req, res, next) {

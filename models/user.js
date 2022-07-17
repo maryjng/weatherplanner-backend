@@ -33,9 +33,32 @@ class User {
         return user;
       }
     }
-
     throw new UnauthorizedError("Invalid username/password");
   }
+
+
+    // gets user by id. returns { username, email, [ appts ids ] }
+    // * Throws NotFoundError if user not found.
+
+    static async get(id) {
+      const userRes = await db.query(
+          `SELECT username, email
+          FROM users
+          WHERE id = $1`, [id])
+
+      const apptRes = await db.query(
+        `SELECT id
+        FROM appointments
+        WHERE user_id = $1`, [id]
+      )
+      const appts = apptRes.rows
+      const user = userRes.rows[0]
+
+      if (!user) throw new NotFoundError(`User ${id} does not exist.`);
+
+      return {...user, appts };
+    }
+
 
     // registers new user.    
     // * Throws BadRequestError on duplicates.
@@ -66,22 +89,7 @@ class User {
         return user;
       }
 
-
-    // gets user by username
-    // * Throws NotFoundError if user not found.
-
-      static async get(username) {
-        const userRes = await db.query(
-            `SELECT username, email
-            FROM users
-            WHERE username = $1`, [username])
-
-        const user = userRes.rows[0]
-
-        if (!user) throw new NotFoundError(`User does not exist: ${username}`);
-
-        return user;
-      }
+    
 
       
       //Need some auth check
@@ -97,6 +105,8 @@ class User {
         const user = result.rows[0];
     
         if (!user) throw new NotFoundError(`User does not exist: ${username}`);
+
+        return user;
       }
 
 }
