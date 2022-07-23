@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");
 const appointmentsRoutes = require("./routes/appointments");
 const usersRoutes = require("./routes/users");
 const apiRoutes = require("./routes/api");
+const forecastRoutes = require("./routes/forecast");
 
 const morgan = require('morgan');
 
@@ -22,6 +23,7 @@ app.use("/auth", authRoutes);
 app.use('/api', apiRoutes);
 app.use('/appointments', appointmentsRoutes)
 app.use('/user', usersRoutes)
+app.use('/forecast', forecastRoutes)
 
 
 app.use(function (err, req, res, next) {

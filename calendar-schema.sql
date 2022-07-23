@@ -11,6 +11,19 @@ CREATE TABLE appointments (
     name TEXT NOT NULL,
     dateStart DATETIME NOT NULL,
     dateEnd DATETIME NOT NULL,
+    location TEXT NOT NULL,
+    zipcode INTEGER NOT NULL,
     description TEXT NOT NULL
-    user_id INTEGER NOT NULL
+    user_id INTEGER NOT NULL REFERENCES users
+)
+
+CREATE TABLE forecast (
+    id SERIAL PRIMARY KEY,
+    appt_id INTEGER NOT NULL REFERENCES appointments,
+    latitude DECIMAL NOT NULL,
+    longitude DECIMAL NOT NULL,
+    max_temp DECIMAL NOT NULL,
+    min_temp DECIMAL NOT NULL,
+    start_hour_temp DECIMAL NOT NULL,
+    precipitation BOOL NOT NULL,
 )

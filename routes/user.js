@@ -14,7 +14,7 @@ const User = require("../models/user");
 
 router.post("/", async function (req, res, next) {
     try {
-      const validator = jsonschema.validate(req.body, userRegisterSchema);
+      const validator = jsonschema.validate(req.body, newUserSchema);
       if (!validator.valid) {
         const errs = validator.errors.map(e => e.stack);
         throw new BadRequestError(errs);

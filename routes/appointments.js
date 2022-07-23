@@ -1,17 +1,27 @@
 const jsonschema = require("jsonschema");
 
 const { BadRequestError } = require("../expressError");
-const { ensureCorrectUser} = require("../middleware/auth")
+const { ensureCorrectUser } = require("../middleware/auth")
 const express = require("express");
-const Appointment = require("../models/appointments");
 const router = new express.Router();
+const Appointment = require("../models/appointments");
+const Forecast = require("../models/forecast");
+const weatherApi = require("../weatherApi");
+const newApptSchema = require("../schemas/newApptSchema");
+const updateApptSchema = require("../schemas/updateApptSchema");
 
 // POST new appt in db. 
 // Expects { name, dateStart, dateEnd, description} 
 // returns { id, name, dateStart, dateEnd, description }
 router.post("/", async function(req, res, next) {
     try {
-        let results = await Appointment.add(req.body)
+        const validator = jsonschema.validate(req.body, newApptSchema);
+        if (!validator.valid) {
+          const errs = validator.errors.map(e => e.stack);
+          throw new BadRequestError(errs);
+        }
+        let userId = res.locals.user
+        let results = await Appointment.add(userId, req.body)
         return res.status(201).json(results)
     } catch (error) {
         return next(error)
@@ -34,6 +44,11 @@ router.get("/:id", async function(req, res, next) {
 // PATCH appointment 
 router.patch("/:id", ensureCorrectUser, async function(req, res, next) {
     try {
+        const validator = jsonschema.validate(req.body, updateApptSchema);
+        if (!validator.valid) {
+          const errs = validator.errors.map(e => e.stack);
+          throw new BadRequestError(errs);
+        }
         let result = await Appointment.update(req.params.id, req.body)
         return res.json({ result })
     } catch (error) {
@@ -51,6 +66,21 @@ router.delete("/:id", ensureCorrectUser, async function(req, res, next) {
         return next(error)
     }
 })
+
+/////////////////////////////FORECAST ROUTES
+
+// POST new forecast in db.
+// request body should have { latitude, longitude, max_temp, min_temp, weather_code }
+router.post("/:appt_id/forecast", async function(req, res, next) {
+    try {
+        let appt_id = req.params.appt_id       
+        let results = await Forecast.add(appt_id, req.body)
+        return res.status(201).json(results)
+    } catch (error) {
+        return next(error)
+    }
+})
+
 
 
 module.exports = router;

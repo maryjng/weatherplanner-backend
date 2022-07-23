@@ -5,10 +5,11 @@ const {
   UnauthorizedError,
 } = require("../expressError");
 const { sqlForPartialUpdate } = require("../helpers/sql");
+const { WEATHERCODE, getLatAndLong } = require("../helpers/latLong")
 
 class Appointments {
     // dateStart and end are Date objects
-    static async add({ name, dateStart, dateEnd, description, user_id }) {
+    static async add(user_id, { name, dateStart, dateEnd, description }) {
         const result = await db.query(
             `INSERT INTO appointments
             (name, dateStart, dateEnd, description, user_id)
@@ -19,17 +20,32 @@ class Appointments {
     }
 
 
-    //get appt by id. Throws NotFoundError if not found
+    //get appt by id. Returns appt details including the saved forecast. Throws NotFoundError if not found
     static async get(id) {
         const result = await db.query(
-            `SELECT name, dateStart, dateEnd, description, user_id
-            FROM appointments
+            `SELECT a.name, a.dateStart, a.dateEnd, a.location, a.zipcode, a.description, a.user_id, f.max_temp, f.min_temp, f.weather_code
+            FROM appointments a JOIN forecast f ON a.id = f.appt_id
             WHERE id=$1`, [id]
         );
         const appt = result.rows[0]
         if (!appt) throw new NotFoundError(`Appointment ${id} does not exist.`);
 
-        return appt;
+        let weather = WEATHERCODE[appt.weather_code]
+
+        const apptRes = { 
+            name: appt.name,
+            dateStart: appt.dateStart,
+            dateEnd: appt.dateEnd,
+            location: appt.location,
+            zipcode: appt.zipcode,
+            description: appt.description,
+            forecast: {
+                max_temp: appt.max_temp,
+                min_temp: appt.min_temp,
+                weather: weather,
+            }
+        }
+        return apptRes;
     }
 
 
@@ -65,6 +81,9 @@ class Appointments {
 
         return appt;
     }
+
 }
 
-module.exports = Appointments;
+
+
+export default Appointments;
