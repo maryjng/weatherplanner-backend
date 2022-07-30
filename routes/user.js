@@ -42,7 +42,14 @@ router.get("/:id", async function(req, res, next) {
 
 
 //update user route
-
+router.update("/:id", async function(req, res, next) {
+  try {
+    let results = await User.update(req.params.id, req.body)
+    return res.json({ updated: results })
+  } catch (error) {
+    return next(error)
+  }
+})
 
 
 

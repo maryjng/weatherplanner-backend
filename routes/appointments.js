@@ -5,8 +5,6 @@ const { ensureCorrectUser } = require("../middleware/auth")
 const express = require("express");
 const router = new express.Router();
 const Appointment = require("../models/appointments");
-const Forecast = require("../models/forecast");
-const weatherApi = require("../weatherApi");
 const newApptSchema = require("../schemas/newApptSchema");
 const updateApptSchema = require("../schemas/updateApptSchema");
 
@@ -67,21 +65,4 @@ router.delete("/:id", ensureCorrectUser, async function(req, res, next) {
     }
 })
 
-/////////////////////////////FORECAST ROUTES
-
-// POST new forecast in db.
-// request body should have { latitude, longitude, max_temp, min_temp, weather_code }
-router.post("/:appt_id/forecast", async function(req, res, next) {
-    try {
-        let appt_id = req.params.appt_id       
-        let results = await Forecast.add(appt_id, req.body)
-        return res.status(201).json(results)
-    } catch (error) {
-        return next(error)
-    }
-})
-
-
-
-module.exports = router;
 

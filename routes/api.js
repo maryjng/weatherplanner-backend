@@ -1,16 +1,25 @@
+//route to request data from weather api
+
 import axios from "./axios";
+const weatherApi = require("..models/weatherApi");
+const { BadRequestError } = require("../expressError");
+const { getLatAndLong } = require("../helpers/latLong")
+const express = require("express");
+const router = new express.Router();
 
-BASE_URL = "https://api.open-meteo.com/v1/forecast"
 
-class weatherApi {
-
-    async getForecast(){
-        let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}hourly=temperature_2m,rain,showers,snowfall,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_hours&windspeed_unit=mph&precipitation_unit=inch&timezone=${timezone}`)
-
-        res
+// req body should be { zipcode, tempUnit, timezone }
+// start date must be yyyy-mm-dd format
+// returns data ready for use with Forecast model's functions
+router.get("/", async function(req, res, next) {
+    try {
+        let { latitude, longitude } = getlatLong(req.body.zipcode)
+        let rawResult = await weatherApi.getForecast(latitude, longitude, req.body)
+        let result = weatherApi.parseRequestForCalendar(rawResult)
+        return res.send(result)
+    } catch (error) {
+        return next(error)
     }
+})
 
-    parseRequest(data){
-        
-    }
-}
+
