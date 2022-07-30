@@ -18,12 +18,10 @@ CREATE TABLE appointments (
 )
 
 CREATE TABLE forecast (
-    id SERIAL PRIMARY KEY,
-    appt_id INTEGER NOT NULL REFERENCES appointments,
+    appt_id PRIMARY KEY NOT NULL REFERENCES appointments,
     latitude DECIMAL NOT NULL,
     longitude DECIMAL NOT NULL,
     max_temp DECIMAL NOT NULL,
     min_temp DECIMAL NOT NULL,
-    start_hour_temp DECIMAL NOT NULL,
-    precipitation BOOL NOT NULL,
+    weathercode INTEGER NOT NULL
 )
