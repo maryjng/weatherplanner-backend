@@ -7,8 +7,6 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const appointmentsRoutes = require("./routes/appointments");
 const usersRoutes = require("./routes/users");
-const apiRoutes = require("./routes/api");
-const forecastRoutes = require("./routes/forecast");
 
 const morgan = require('morgan');
 
@@ -19,11 +17,10 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
 
+// app.use('/api', require('./routes/api.route'));
 app.use("/auth", authRoutes);
-app.use('/api', apiRoutes);
 app.use('/appointments', appointmentsRoutes)
-app.use('/user', usersRoutes)
-app.use('/forecast', forecastRoutes)
+app.use('/users', usersRoutes)
 
 
 app.use(function (err, req, res, next) {
@@ -38,3 +35,5 @@ app.use(function (err, req, res, next) {
 
 module.exports = app;
 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`));

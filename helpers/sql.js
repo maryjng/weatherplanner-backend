@@ -1,10 +1,23 @@
 const { BadRequestError } = require("../expressError");
 
-// Takes two objects: dataToUpdate and the js variable to column name objects as jsToSql
-// Organizes the info that will be updated into parametized form and returns them as a list separated by commas, ready for use in query ex. ['"first_name"=$1', '"age"=$2']
-// also returns the values in dataToUpdate
+/**
+ * Helper for making selective update queries.
+ *
+ * The calling function can use it to make the SET clause of an SQL UPDATE
+ * statement.
+ *
+ * @param dataToUpdate {Object} {field1: newVal, field2: newVal, ...}
+ * @param jsToSql {Object} maps js-style data fields to database column names,
+ *   like { firstName: "first_name", age: "age" }
+ *
+ * @returns {Object} {sqlSetCols, dataToUpdate}
+ *
+ * @example {firstName: 'Aliya', age: 32} =>
+ *   { setCols: '"first_name"=$1, "age"=$2',
+ *     values: ['Aliya', 32] }
+ */
 
-function sqlForPartialUpdate(dataToUpdate, jsToSql) {
+function sqlForPartialUpdate(dataToUpdate, jsToSql={}) {
   const keys = Object.keys(dataToUpdate);
   if (keys.length === 0) throw new BadRequestError("No data");
 

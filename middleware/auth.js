@@ -5,6 +5,7 @@
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
 const { UnauthorizedError } = require("../expressError");
+const Appointment = require("../models/appointments");
 
 
 /** Middleware: Authenticate user.
@@ -43,32 +44,21 @@ function ensureLoggedIn(req, res, next) {
 }
 
 
-/** Middleware to use when they be logged in as an admin user.
- *
- *  If not, raises Unauthorized.
- */
-
-// function ensureAdmin(req, res, next) {
-//   try {
-//     if (!res.locals.user || !res.locals.user.isAdmin) {
-//       throw new UnauthorizedError();
-//     }
-//     return next();
-//   } catch (err) {
-//     return next(err);
-//   }
-// }
-
 /** Middleware to use when they must provide a valid token & be user matching
- *  id provided as route param OR matching user_id in request body (for appt routes)
+ *  username provided as route param OR be user matching username of provided appt id
  *
  *  If not, raises Unauthorized.
  */
-
-function ensureCorrectUser(req, res, next) {
+async function ensureCorrectUser(req, res, next) {
   try {
     const user = res.locals.user;
-    if (!(user && (user.id === req.params.id || user.id === req.body.user_id))) {
+    let apptUser = ""
+
+    if (req.params.id) {
+      apptUser = await Appointment.getApptUser(req.params.id)
+    };
+
+    if (!(user && (user.username === req.params.username || user.username === apptUser))) {
       throw new UnauthorizedError();
     }
     return next();
