@@ -4,7 +4,10 @@ const { BadRequestError } = require("../expressError");
 const express = require("express");
 const { ensureLoggedIn, ensureCorrectUser } = require("../middleware/auth")
 const Appointment = require("../models/appointments");
+const Forecast = require("../models/forecasts")
 const updateApptSchema = require("../schemas/updateAppt")
+const newForecastSchema = require("../schemas/newForecast")
+const updateForecastSchema = require("../schemas/updateForecast")
 const router = new express.Router();
 
 //save new appt in db. 
@@ -64,12 +67,44 @@ router.delete("/:id", ensureCorrectUser, async function(req, res, next) {
     }
 })
 
-/////////////////////// FORECAST
+/////////////////////// FORECAST ////////////////////////////////
 // route to get all forecasts given appt id
 router.get("/:id/forecast", ensureCorrectUser, async function(req, res, next) {
     try {
-        const appointments = await Appointment.getApptForecasts(req.params.id)
-        return res.json({ appointments })
+        const forecast = await Appointment.getApptForecasts(req.params.id)
+        return res.json({ forecast })
+    } catch (error) {
+        return next(error)
+    }
+})
+
+
+//route to add a forecast for the specific appt by id
+router.post("/:id/forecast", async function(req, res, next) {
+    try {
+        const validator = jsonschema.validate(req.body, newForecastSchema);
+        if (!validator.valid) {
+          const errs = validator.errors.map(e => e.stack);
+          throw new BadRequestError(errs);
+        }
+        const forecast = await Forecast.add(req.params.id, req.body)
+        return res.status(201).send(forecast)
+    } catch (error) {
+        return next(error)
+    }
+})
+
+
+//route to update a forecast by id for the specific appt by appt_id
+router.patch("/:appt_id/forecast/:id", async function(req, res, next) {
+    try {
+        const validator = jsonschema.validate(req.body, updateForecastSchema);
+        if (!validator.valid) {
+          const errs = validator.errors.map(e => e.stack);
+          throw new BadRequestError(errs);
+        }
+        const result = Forecast.update(req.params.appt_id, req.params.id, req.body)
+        return res.send(result)
     } catch (error) {
         return next(error)
     }

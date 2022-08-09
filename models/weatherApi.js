@@ -1,13 +1,13 @@
 //HELPERS FOR REQUEST AND PARSE FUNCTIONS TO DO WITH FORECAST API 
 
-import axios from "./axios";
+const axios = require("axios")
 const db = require("../db");
 const {
   NotFoundError,
   BadRequestError,
   UnauthorizedError,
 } = require("../expressError");
-const { getTodayDate, getEndDate } = require("../helpers/latLong")
+const { getTodayDate, getEndDate, dateToISO } = require("../helpers/api")
 
 const BASE_URL = "https://api.open-meteo.com/v1/forecast"
 
@@ -16,16 +16,12 @@ const WEATHERCODE = {0: "clear skies", 1: "mainly clear", 2: "partly cloudy", 3:
 
 
 class weatherApi {
-    //sends request to forecast API. Takes latitude, longitude { tempUnit, timezone }
+    //sends request to forecast API. Takes latitude, longitude, tempUnit, timezone 
     // start date must be yyyy-mm-dd format
-    static async getForecast(latitude, longitude, { data }) {
-        const { latitude, longitude, tempUnit, timezone } = data
-        const startDate = getTodayDate()
-        const endDate = getEndDate()
-        let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min, precipitation_hours&temperature_unit=${tempUnit}&timezone=
-        America%2FNew_York&start_date=${startDate}&end_date=${endDate})`)
+    static async getForecast(latitude, longitude, tempUnit="fahrenheit", timezone="America%2FNew_York") {
+        let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=${tempUnit}&timezone=${timezone}`)
 
-        return res;
+        return res.data;
     }
 
     // organizes response data from getForecast to be displayed in front end 
@@ -52,29 +48,37 @@ class weatherApi {
     }
 
     // organizes response from getForecast and returns data for use with Forecast model fns
-    // expects data to include startDate, { latitude, longitude, daily: { time, weathercode, temperature_2m_max, temperature_2m_min }}
-    // startDate must be yyyy-mm-dd
-    // returns the same FOR THE DAY OF THE APPT ONLY
-    static async parseRequestForDb(startDate, data){
+    // expects data to include { latitude, longitude, daily: { time, weathercode, temperature_2m_max, temperature_2m_min }}
+    // startDate and endDate must be yyyy-mm-dd
+    // returns { date: { latitude, longitude, max_temp, min_temp, weathercode }} for whichever dates the appointment includes
+    static parseRequestForDb(startDate, endDate, data){
         let { latitude, longitude, daily } = data
+        let currDate = new Date(startDate)
+        endDate = new Date(endDate)
+        endDate.setDate(endDate.getDate() + 1)
+        let result = {}
+
         let dayIdx = daily.time.indexOf(startDate)
 
-        let max_temp = data.daily.temperature_2m_max[dayIdx]
-        let min_temp = data.daily.temperature_2m_min[dayIdx]
-        let weather_code = data.daily.weathercode[dayIdx]
+        while (currDate.getTime() < endDate.getTime()) {
+            let max_temp = daily.temperature_2m_max[dayIdx]
+            let min_temp = daily.temperature_2m_min[dayIdx]
+            let weathercode = data.daily.weathercode[dayIdx]
+            let isoDate = dateToISO(currDate)
 
-        let forecastForDb = {
-            latitude: latitude,
-            longitude: longitude,
-            max_temp: max_temp,
-            min_temp: min_temp,
-            weather_code: weather_code
+            result[isoDate] = {
+                latitude: latitude,
+                longitude: longitude,
+                date: isoDate,
+                max_temp: max_temp,
+                min_temp: min_temp,
+                weathercode: weathercode
+            }
+            dayIdx += 1
+            currDate.setDate(currDate.getDate() + 1)
         }
-
-        return forecastForDb;
+        return result;
     }
-
 }
 
-
-module.exports = { weatherApi, WEATHERCODE }
+module.exports = weatherApi;

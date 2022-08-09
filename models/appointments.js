@@ -88,9 +88,9 @@ class Appointments {
     
     // get all forecasts for an appt
     static async getApptForecasts(id) {
-        const result = await db.qery(
+        const result = await db.query(
             `SELECT *
-            FROM forecasts
+            FROM forecast
             WHERE appt_id=$1`, [id]
         );
 
