@@ -23,6 +23,19 @@ class Appointments {
     }
 
 
+    //get all appts for user
+    // static async getUserAppts(username) {
+    //     const result = await db.query(
+    //         `SELECT id, name, dateStart, dateEnd, description, location
+    //         FROM appointments
+    //         WHERE username=$1`, [username]
+    //     );
+    //     if (!result.rows[0]) throw new NotFoundError(`User ${username} does not exist.`)
+
+    //     return result
+    // }
+
+
     //get appt by id. Throws NotFoundError if not found
     static async get(id) {
         const result = await db.query(

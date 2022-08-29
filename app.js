@@ -7,7 +7,7 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const appointmentsRoutes = require("./routes/appointments");
 const usersRoutes = require("./routes/users");
-const apiRoutes = require("./routes/apiReq")
+const apiRoutes = require("./routes/weatherapi")
 
 const morgan = require('morgan');
 
@@ -22,7 +22,7 @@ app.use(authenticateJWT);
 app.use("/auth", authRoutes);
 app.use('/appointments', appointmentsRoutes)
 app.use('/users', usersRoutes)
-app.use('/apitest', apiRoutes)
+app.use('/weatherapi', apiRoutes)
 
 
 app.use(function (err, req, res, next) {
@@ -37,5 +37,5 @@ app.use(function (err, req, res, next) {
 
 module.exports = app;
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`🚀 @ http://localhost:${PORT}`));

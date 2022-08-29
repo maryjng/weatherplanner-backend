@@ -68,6 +68,7 @@ class User {
 
 
     // gets user by username
+    // also returns all appts for the user
     // * Throws NotFoundError if user not found.
 
     static async get(username) {
@@ -77,10 +78,19 @@ class User {
           WHERE username = $1`, [username])
 
       const user = userRes.rows[0]
-
       if (!user) throw new NotFoundError(`User does not exist: ${username}`);
 
-      return user;
+      const appointmentsRes = await db.query(
+        `SELECT id, name, dateStart, dateEnd, description, location
+        FROM appointments
+        WHERE username=$1`, [username]
+      );
+
+      const appointments = appointmentsRes.rows
+
+      let response = {...user, appointments}
+
+      return response;
     }
 
       

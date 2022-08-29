@@ -22,8 +22,8 @@ router.post("/", async function (req, res, next) {
 })
 
 
-//get user by username
-// ADD USER APPOINTMENTS IN RES TOO ***
+//get user by username. Response includes all user appts
+// requires logged-in user to be the same as requested user
 router.get("/:username", ensureCorrectUser, async function(req, res, next) {
     try {
         let results = await User.get(req.params.username)
