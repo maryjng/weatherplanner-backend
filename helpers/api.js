@@ -6,7 +6,7 @@ const apiKey = "3ba4d84d05d3de845562ec6fad5dbd2c"
 async function getLatAndLong(zipcode) {
     let res = await axios.get(`https://thezipcodes.com/api/v1/search?zipCode=${zipcode}countryCode=US&apiKey=${apiKey}`)
     let { latitude, longitude } = res.location
-    return {latitude: latitude, longitude: longitude}
+    return {latitude: latitude, longitude: longitude }
 }
 
 
