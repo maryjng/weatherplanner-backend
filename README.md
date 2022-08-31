@@ -1,4 +1,4 @@
-# weatherplanner
+# weatherplanner Backend
 
 APIs used: 
 https://api.open-meteo.com/v1/forecast
