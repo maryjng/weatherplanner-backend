@@ -1,5 +1,5 @@
 const axios = require("axios")
-const apiKey = "3ba4d84d05d3de845562ec6fad5dbd2c"
+// const apiKey = ""
 
 // takes zipcode and returns latitude and longitude for weather api request use
 
