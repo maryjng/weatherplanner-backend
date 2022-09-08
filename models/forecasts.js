@@ -12,6 +12,7 @@ class Forecast {
 
     // adds a forecast to db
     // data is { latitude, longitude, date, max_temp, min_temp, weathercode }
+    // meant to take the results of WeatherApi.parseRequestForDb
     static async add(appt_id, data) {
         console.log(data)
         for (let key of Object.keys(data)) {

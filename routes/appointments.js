@@ -16,7 +16,8 @@ const router = new express.Router();
 // must be logged in
 router.post("/", ensureLoggedIn, async function(req, res, next) {
     try {
-        let results = await Appointment.add(res.locals.user.username, req.body)
+        console.log(req.body.data)
+        let results = await Appointment.add(req.body.data)
         return res.send(results)
     } catch (error) {
         return next(error)
@@ -25,11 +26,15 @@ router.post("/", ensureLoggedIn, async function(req, res, next) {
 
 
 // gets appointment by id 
-// returns { username, name, dateStart, dateEnd, description, location }
+// returns { username, name, dateStart, dateEnd, description, location, {forecast} }
 // must be logged in
 router.get("/:id", ensureCorrectUser, async function(req, res, next) {
     try {
         let appointment = await Appointment.get(req.params.id)
+        const forecastRes = await Appointment.getApptForecasts(req.params.id)
+        if (forecastRes.rows) {
+            appointment[forecast] = forecastRes
+        }
         return res.json({ appointment })
     } catch (error) {
         return next(error)

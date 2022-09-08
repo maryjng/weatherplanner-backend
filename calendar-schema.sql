@@ -8,10 +8,10 @@ CREATE TABLE users (
 CREATE TABLE appointments (
     id SERIAL PRIMARY KEY,
     username TEXT NOT NULL REFERENCES users,
-    name TEXT NOT NULL,
-    dateStart TIMESTAMP NOT NULL,
-    dateEnd TIMESTAMP NOT NULL,
-    description TEXT NOT NULL,
+    title TEXT NOT NULL,
+    startdate TIMESTAMP NOT NULL,
+    enddate TIMESTAMP NOT NULL,
+    description TEXT,
     location TEXT NOT NULL
 );
 
@@ -24,4 +24,10 @@ CREATE TABLE forecast (
     max_temp DECIMAL NOT NULL,
     min_temp DECIMAL NOT NULL,
     weathercode INTEGER NOT NULL
+);
+
+CREATE TABLE zipcodes (
+    zipcode CHAR(5) PRIMARY KEY,
+    latitude DECIMAL NOT NULL,
+    longitude DECIMAL NOT NULL
 );

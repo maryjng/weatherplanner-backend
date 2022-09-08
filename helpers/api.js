@@ -1,12 +1,17 @@
-const axios = require("axios")
-// const apiKey = ""
+const db = require("../db");
 
 // takes zipcode and returns latitude and longitude for weather api request use
-
-async function getLatAndLong(zipcode) {
-    let res = await axios.get(`https://thezipcodes.com/api/v1/search?zipCode=${zipcode}countryCode=US&apiKey=${apiKey}`)
-    let { latitude, longitude } = res.location
-    return {latitude: latitude, longitude: longitude }
+async function getLatAndLong(data) {
+    let { zipcode } = data
+    let res = await db.query(
+        `SELECT latitude, longitude
+        FROM zipcodes
+        WHERE zipcode=$1
+        `, [zipcode]
+    );
+    let result = res.rows[0]
+    if (!result) return false;
+    return result;
 }
 
 
@@ -38,5 +43,3 @@ function getEndDate(days) {
 
 module.exports = { getLatAndLong, getTodayDate, getEndDate, dateToISO };
 
-
-// https://thezipcodes.com/docs

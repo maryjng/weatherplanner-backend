@@ -7,7 +7,7 @@ const {
   BadRequestError,
   UnauthorizedError,
 } = require("../expressError");
-const { getTodayDate, getEndDate, dateToISO } = require("../helpers/api")
+const { getTodayDate, getEndDate, getLatAndLong, dateToISO } = require("../helpers/api")
 
 const BASE_URL = "https://api.open-meteo.com/v1/forecast"
 
@@ -16,11 +16,12 @@ const WEATHERCODE = {0: "clear skies", 1: "mainly clear", 2: "partly cloudy", 3:
 
 
 class weatherApi {
-    //sends request to forecast API. Takes latitude, longitude, tempUnit, timezone 
+    //sends request to forecast API. Takes zipcode, tempUnit
     // start date must be yyyy-mm-dd format
-    static async getForecast(latitude, longitude, tempUnit="fahrenheit", timezone="America%2FNew_York") {
-        let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=${tempUnit}&timezone=${timezone}`)
-
+    static async getForecast(zipcode, tempUnit="fahrenheit") {
+        let result = await getLatAndLong(zipcode)
+        let { latitude, longitude } = result
+        let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=${tempUnit}&timezone=auto`)
         return res.data;
     }
 
@@ -51,16 +52,16 @@ class weatherApi {
     // expects data to include { latitude, longitude, daily: { time, weathercode, temperature_2m_max, temperature_2m_min }}
     // startDate and endDate must be yyyy-mm-dd
     // returns { date: { latitude, longitude, max_temp, min_temp, weathercode }} for whichever dates the appointment includes
-    static parseRequestForDb(startDate, endDate, data){
+    static parseRequestForDb(data){
         let { latitude, longitude, daily } = data
-        let currDate = new Date(startDate)
-        endDate = new Date(endDate)
-        endDate.setDate(endDate.getDate() + 1)
+        let currDate = new Date(getTodayDate())
+        let endDate = new Date(getEndDate(8))
         let result = {}
 
-        let dayIdx = daily.time.indexOf(startDate)
+        let dayIdx = daily.time.indexOf(currDate)
 
         while (currDate.getTime() < endDate.getTime()) {
+            console.log(currDate.getTime())
             let max_temp = daily.temperature_2m_max[dayIdx]
             let min_temp = daily.temperature_2m_min[dayIdx]
             let weathercode = data.daily.weathercode[dayIdx]

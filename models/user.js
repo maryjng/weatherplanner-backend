@@ -81,7 +81,7 @@ class User {
       if (!user) throw new NotFoundError(`User does not exist: ${username}`);
 
       const appointmentsRes = await db.query(
-        `SELECT id, name, dateStart, dateEnd, description, location
+        `SELECT id, title, startDate, endDate, description, location
         FROM appointments
         WHERE username=$1`, [username]
       );
