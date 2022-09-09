@@ -17,10 +17,10 @@ const WEATHERCODE = {0: "clear skies", 1: "mainly clear", 2: "partly cloudy", 3:
 
 class weatherApi {
     //sends request to forecast API. Takes zipcode, tempUnit
-    // start date must be yyyy-mm-dd format
-    static async getForecast(zipcode, tempUnit="fahrenheit") {
-        let result = await getLatAndLong(zipcode)
-        let { latitude, longitude } = result
+    static async getForecast(data) {
+        console.log(data)
+        let { zipcode } = data
+        let { latitude, longitude } = await getLatAndLong(zipcode)
         let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=${tempUnit}&timezone=auto`)
         return res.data;
     }

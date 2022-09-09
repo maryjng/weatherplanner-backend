@@ -9,6 +9,7 @@ const { NotFoundError } = require("../expressError");
 // needs zipcode, tempUnit=fahrenheit
 router.get("/", async function(req, res, next) {
     try {
+        console.log(req.body)
         let data = await weatherApi.getForecast(req.body)
         if (!data) throw new NotFoundError("Zipcode does not exist.")
         // latitude=40.41, longitude=-74.41 for test
