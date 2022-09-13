@@ -33,7 +33,7 @@ router.get("/:id", ensureCorrectUser, async function(req, res, next) {
         let appointment = await Appointment.get(req.params.id)
         const forecastRes = await Appointment.getApptForecasts(req.params.id)
         if (forecastRes.rows) {
-            appointment[forecast] = forecastRes
+            appointment['forecast'] = forecastRes
         }
         return res.json({ appointment })
     } catch (error) {

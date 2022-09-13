@@ -18,8 +18,7 @@ const WEATHERCODE = {0: "clear skies", 1: "mainly clear", 2: "partly cloudy", 3:
 class weatherApi {
     //sends request to forecast API. Takes zipcode, tempUnit
     static async getForecast(data) {
-        console.log(data)
-        let { zipcode } = data
+        let { zipcode, tempUnit } = data
         let { latitude, longitude } = await getLatAndLong(zipcode)
         let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=${tempUnit}&timezone=auto`)
         return res.data;
@@ -27,25 +26,23 @@ class weatherApi {
 
     // organizes response data from getForecast to be displayed in front end 
     //     expects response from getForecast as input
-    //     returns { latitude, longitude, daily: 
-    //        time: { weather, max, min, precipitation_hour }
+    //     returns {date: { weather, max, min}, date: ...}
     //      }
     static parseRequestForCalendar(data){
-        let { latitude, longitude, daily } = data
-        let results = { latitude: latitude, longitude: longitude }
+        let { daily } = data
+        let forecast = {}
 
         for (let x = 0; x < daily.time.length; x++) {
-            let day = []
+            let date = daily.time[x]
             let weather = WEATHERCODE[daily.weathercode[x]]
-            day.push( 
-                weather, 
-                daily.temperature_2m_max[x], 
-                daily.temperature_2m_min[x], 
-                daily.precipitation_hours[x]
-                )
-            results.daily[daily.time[x]] = day
+            forecast[date] = {
+                "weather": weather, 
+                "max_temp": daily.temperature_2m_max[x], 
+                "min_temp": daily.temperature_2m_min[x], 
+                "date": date
+            }
         }
-        return results;
+        return forecast;
     }
 
     // organizes response from getForecast and returns data for use with Forecast model fns

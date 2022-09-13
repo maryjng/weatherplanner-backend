@@ -9,12 +9,12 @@ const { NotFoundError } = require("../expressError");
 // needs zipcode, tempUnit=fahrenheit
 router.get("/", async function(req, res, next) {
     try {
-        console.log(req.body)
+        console.log(`weatherapi: ${JSON.stringify(req.body)}`)
         let data = await weatherApi.getForecast(req.body)
-        if (!data) throw new NotFoundError("Zipcode does not exist.")
-        // latitude=40.41, longitude=-74.41 for test
-        let result = weatherApi.parseRequestForDb(data)
-        // let results = Forecast.add(1, result) 
+        // if (!data) throw new NotFoundError("Zipcode does not exist.")
+        // let result = weatherApi.parseRequestForDb(data)
+        let result = weatherApi.parseRequestForCalendar(data)
+        console.log(result)
         return res.send(result)
     } catch (error) {
         return next(error)
