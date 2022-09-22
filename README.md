@@ -115,6 +115,8 @@ APPOINTMENTS model contains functions for adding, updating, deleting, and gettin
       - throws NotFoundError if user does not exist
 
 # USER FLOW
+User actions and the step-by-step calling of functions are displayed here. In general, a form is submitted and the weatherApi class (api.js) in the frontend handles request sending to the backend. The backend route calls the appropriate model function(s) to query the db and manipulate data, which is sent back to the frontend as a response. Components are updated as needed according to the response.
+
 ## Registration
       User submits the register form with a username, email, and password.
       Register component calls the register function from the api class. A POST request is sent to the backend route /auth/register, which adds the user to the database and returns a token.
