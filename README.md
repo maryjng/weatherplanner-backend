@@ -6,12 +6,12 @@ https://thezipcodes.com/docs
 
 See calendar-schema.sql for db schema. Each forecast row is for one day and multiple forecasts for one appointment are grouped together by the appt_id column.
 
-General Overview
+###General Overview
 This web application integrates weather forecasts based on zipcode with a typical calendar planner function to allow users to schedule their appointments based on predicted weather for the location. A one-week forecast (can be extended by paying the third party api provider) can be requested through submission of the zipcode form. Users can reference the forecast as they finalize their appointment details and submit the new appointment form. Forecasts are saved along with their connected appointment. The forecast information is called from a database and displayed whenever the user clicks on the event. Users will have an option to edit the appointment location and time or delete the appointment altogether. 
 
-API Routes - There are four main routes - auth, users, appointments, weatherapi; Appointments has a subroute for forecasts of a specific appointment: appointments/:appt_id/forecast 
+###API Routes - There are four main routes - auth, users, appointments, weatherapi; Appointments has a subroute for forecasts of a specific appointment: appointments/:appt_id/forecast 
 
-1)  AUTH - The auth route is handles token generation and user registration.
+##  AUTH - The auth route is handles token generation and user registration.
       POST /auth/token:  { username, password } => { token }
       - Returns JWT token which can be used to authenticate further requests.
     
@@ -19,12 +19,12 @@ API Routes - There are four main routes - auth, users, appointments, weatherapi;
        where user must include { username, password, firstName, lastName, email }
         - Returns JWT token which can be used to authenticate further requests.
 
-2)  USERS - This route handles user get requests
+##  USERS - This route handles user get requests
       GET /users/:username: queries db for user by username. 
         - Response includes all user appointments, if any.
         - Requires logged-in user to be the same as requested user
     
- 3) APPOINTMENTS - This route handles appointment creation, deletion, editing, and get requests
+## APPOINTMENTS - This route handles appointment creation, deletion, editing, and get requests
       POST /appointments: save new appt in db. 
         - Expects { username, name, dateStart, dateEnd, description, location} 
         - Returns { id, username, name, dateStart, dateEnd, description, location }
@@ -38,42 +38,42 @@ API Routes - There are four main routes - auth, users, appointments, weatherapi;
         - Returns { username, name, dateStart, dateEnd, description, location }
         - Must be appointment creator
     
-  APPOINTMENTS/FORECAST - SUBROUTE FOR APPOINTMENTS. Handles creation, deletion, editing, and get requests for forecasts of a specific appointment
+###  APPOINTMENTS/FORECAST - SUBROUTE FOR APPOINTMENTS. Handles creation, deletion, editing, and get requests for forecasts of a specific appointment
       GET /appointments/:appt_id/forecast: route to get all forecasts given appt id
       POST /appointments/:appt_id: route to add a forecast for the specific appt by id
       PATCH /appointments/:appt_id/forecast/:id : route to update a forecast by id for the specific appt by appt_id
     
-   WEATHERAPI - This route is to handle requests for forecasts from the third party weather API.
+## WEATHERAPI - This route is to handle requests for forecasts from the third party weather API.
       GET /weatherapi
         - request body should have { zipcode, tempUnit }
 
-MODELS are divided into appointments, forecasts, user, & weatherapi
-1) APPOINTMENTS model contains functions for adding, updating, deleting, and getting individual and all appointments. There is also a getApptUser function that takes an appointment id and returns the username of its creator.
+#MODELS are divided into appointments, forecasts, user, & weatherapi
+## APPOINTMENTS model contains functions for adding, updating, deleting, and getting individual and all appointments. There is also a getApptUser function that takes an appointment id and returns the username of its creator.
  add(data): 
  - where data is { username, title, startDate, endDate, description, location } 
  - returns { id, username, title, startDate, endDate, description, location }
  
- get(id): 
+ ###get(id): 
  - where id is the appointment id
  - returns { id, username, title, startDate, endDate, description, location } 
  - throws NotFoundError if id does not exist
  
-update(id, data):
+###update(id, data):
  - where id is the appointment id and data can contain { username, title, startDate, endDate, description, location }
  - utilizes the sqlForPartialUpdate helper function to update whichever valid values are passed in through data param
  - throws NotFoundError if id does not exist
 
-remove(id):
+###remove(id):
  - where id is the appointment id
  - returns appointment name
  - throws NotFoundError if id does not exist
 
-getApptForecasts(id):
+###getApptForecasts(id):
  - where id is the appointment id
  - returns all forecasts for the appointment like [{forecast}, {forecast}, {forecast}...]
  - throws NotFoundError if id does not exist
 
-getApptUser(id):
+###getApptUser(id):
  - where id is the appointment id
  - returns the username of the appointment creator
  - throws NotFoundError if id does not exist
