@@ -50,7 +50,7 @@ The entire application follows the usual Node.js/Express backend and React front
         - request body should have { zipcode, tempUnit }
 
 # MODELS are divided into appointments, forecasts, user, & weatherapi
-  ## APPOINTMENTS model contains functions for adding, updating, deleting, and getting individual and all appointments. There is also a getApptUser function that takes an appointment id and returns the username of its creator.
+APPOINTMENTS model contains functions for adding, updating, deleting, and getting individual and all appointments. There is also a getApptUser function that takes an appointment id and returns the username of its creator.
       add(data): 
        - where data is { username, title, startDate, endDate, description, location } 
        - returns { id, username, title, startDate, endDate, description, location }
@@ -132,11 +132,11 @@ The entire application follows the usual Node.js/Express backend and React front
       The appointment and forecasts are saved to the database. 
       The appointment is now displayed on the main calendar whenever the user is logged in.
       
-## Viewing Appointment Details
-      The user can click on an appointment (event in calendar terms), which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting event and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form.
+## Viewing Appointment Details / Deleting Appointment
+      The user can click on an appointment, which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting appointment and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form. They can also delete the appointment by clicking "Delete Appointment".
       
-      
-   
+## Editing Appointment - *** NEED UPDATE ***
+
       
       
       
