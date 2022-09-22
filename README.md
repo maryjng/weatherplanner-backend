@@ -6,7 +6,7 @@ https://thezipcodes.com/docs
 
 See calendar-schema.sql for db schema. Each forecast row is for one day and multiple forecasts for one appointment are grouped together by the appt_id column.
 
-###General Overview
+## General Overview
 This web application integrates weather forecasts based on zipcode with a typical calendar planner function to allow users to schedule their appointments based on predicted weather for the location. A one-week forecast (can be extended by paying the third party api provider) can be requested through submission of the zipcode form. Users can reference the forecast as they finalize their appointment details and submit the new appointment form. Forecasts are saved along with their connected appointment. The forecast information is called from a database and displayed whenever the user clicks on the event. Users will have an option to edit the appointment location and time or delete the appointment altogether. 
 
 ###API Routes - There are four main routes - auth, users, appointments, weatherapi; Appointments has a subroute for forecasts of a specific appointment: appointments/:appt_id/forecast 
@@ -58,17 +58,17 @@ This web application integrates weather forecasts based on zipcode with a typica
       - returns { id, username, title, startDate, endDate, description, location } 
       - throws NotFoundError if id does not exist
  
-      ### update(id, data):
+      update(id, data):
       - where id is the appointment id and data can contain { username, title, startDate, endDate, description, location }
       - utilizes the sqlForPartialUpdate helper function to update whichever valid values are passed in through data param
       - throws NotFoundError if id does not exist
 
-      ###remove(id):
+      remove(id):
       - where id is the appointment id
       - returns appointment name
        - throws NotFoundError if id does not exist
 
-      ###getApptForecasts(id):
+      getApptForecasts(id):
       - where id is the appointment id
       - returns all forecasts for the appointment like [{forecast}, {forecast}, {forecast}...]
       - throws NotFoundError if id does not exist
@@ -80,33 +80,33 @@ This web application integrates weather forecasts based on zipcode with a typica
        - basically used as part of the auth middleware to check if the current user is authorized
 
 ## FORECAST - contains functions for adding, updating, deleting, and getting individual or all forecasts.
-      ###add(appt_id, data)
+      add(appt_id, data)
       - where appt_id is the appointment id and data is { latitude, longitude, date, max_temp, min_temp, weathercode }
       - this function is meant to take the results of the weatherApi.parseRequestForDb function. 
       - returns { appt_id, latitude, longitude, date, max_temp, min_temp, weathercode }
       - throws NotFoundError if appt_id does not exist
 
-      ###update(appt_id, id, data)
+      update(appt_id, id, data)
       - where appt_id is the appointment id, id is the forecast id, and data can include { max_temp, min_temp, weathercode }
       - returns { appt_id, date, max_temp, min_temp, weathercode }
       - throws NotFoundError if appt_id or id does not exist
 
 ## USER - functions for authenticating, registering, getting, and removing users
-      ###authenticate(username, password)
+      authenticate(username, password)
       - checks database to see if username/password matches
       - returns user query result
       - throws UnauthorizedError if check fails
 
-      ###register(data) - data is { username, password, email }
+      register(data) - data is { username, password, email }
       - registers user. Checks if the username already exists
       - throws BadRequestError if duplicate is found
 
-      ###get(username)
+      ### get(username)
       - gets user by username
       - returns { id, title, startDate, endDate, description, location, { appointments } }
       - throws NotFoundError if user does not exist
 
-      ###remove(username)
+      ### remove(username)
       - deletes user by username
       - returns username
       - throws NotFoundError if user does not exist
