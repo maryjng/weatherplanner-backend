@@ -1,13 +1,14 @@
 # weatherplanner Backend
 
-APIs used: 
+API used: 
 https://api.open-meteo.com/v1/forecast
-https://thezipcodes.com/docs
 
 See calendar-schema.sql for db schema. Each forecast row is for one day and multiple forecasts for one appointment are grouped together by the appt_id column.
 
 ## General Overview
-This web application integrates weather forecasts based on zipcode with a typical calendar planner function to allow users to schedule their appointments based on predicted weather for the location. A one-week forecast (can be extended by paying the third party api provider) can be requested through submission of the zipcode form. Users can reference the forecast as they finalize their appointment details and submit the new appointment form. Forecasts are saved along with their connected appointment. The forecast information is called from a database and displayed whenever the user clicks on the event. Users will have an option to edit the appointment location and time or delete the appointment altogether. 
+This web application integrates weather forecasts based on zipcode with a typical calendar planner function to allow users to schedule their appointments based on predicted weather for the location. A one-week forecast (can be extended by paying the third party api provider) can be requested through submission of the zipcode form. Users can reference the forecast as they finalize their appointment details and submit the new appointment form. Forecasts are saved along with their connected appointment. The forecast information is called from a database and displayed whenever the user clicks on the event. Users will have an option to edit the appointment location and time or delete the appointment altogether.
+
+### The entire application follows the usual Node.js/Express backend and React frontend approach. There is an api class (api.js) defined in the frontend that is responsible for sending requests to the backend. The backend may query the database and/or respond depending on the request.
 
 # API Routes - There are four main routes - auth, users, appointments, weatherapi; Appointments has a subroute for forecasts of a specific appointment: appointments/:appt_id/forecast 
 
@@ -110,3 +111,19 @@ This web application integrates weather forecasts based on zipcode with a typica
       - deletes user by username
       - returns username
       - throws NotFoundError if user does not exist
+
+# USER FLOW
+## Registration
+      User submits the register form with a username, email, and password.
+      Register component calls the register function from the api class. A POST request is sent to the backend route /auth/register, which adds the user to the database and returns a token.
+             
+## Login
+      User submits the login form with a username and password.
+      The Login component calls the login function from the api class. A GET request is sent to the backend route /auth/login, which returns a token if successful. The token is saved in the api class component as the class variable token. The React states currentUser, token, and allEvents are set using queried user information.
+      
+## Appointment Creation
+      User submits the NewAppointmentForm. 
+      The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments. 
+      
+      
+      
