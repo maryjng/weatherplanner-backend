@@ -8,9 +8,10 @@ See calendar-schema.sql for db schema. Each forecast row is for one day and mult
 ## General Overview
 This web application integrates weather forecasts based on zipcode with a typical calendar planner function to allow users to schedule their appointments based on predicted weather for the location. A one-week forecast (can be extended by paying the third party api provider) can be requested through submission of the zipcode form. Users can reference the forecast as they finalize their appointment details and submit the new appointment form. Forecasts are saved along with their connected appointment. The forecast information is called from a database and displayed whenever the user clicks on the event. Users will have an option to edit the appointment location and time or delete the appointment altogether.
 
-### The entire application follows the usual Node.js/Express backend and React frontend approach. There is an api class (api.js) defined in the frontend that is responsible for sending requests to the backend. The backend may query the database and/or respond depending on the request.
+The entire application follows the usual Node.js/Express backend and React frontend approach. There is an api class (api.js) defined in the frontend that is responsible for sending requests to the backend. Backend routes will call functions from models (in models folder) and may query the database and/or respond depending on the request.
 
-# API Routes - There are four main routes - auth, users, appointments, weatherapi; Appointments has a subroute for forecasts of a specific appointment: appointments/:appt_id/forecast 
+# API Routes - There are four main routes - auth, users, appointments, weatherapi; 
+### Appointments has a subroute for forecasts of a specific appointment: appointments/:appt_id/forecast 
 
 ##  AUTH - The auth route is handles token generation and user registration.
       POST /auth/token:  { username, password } => { token }
@@ -120,10 +121,22 @@ This web application integrates weather forecasts based on zipcode with a typica
 ## Login
       User submits the login form with a username and password.
       The Login component calls the login function from the api class. A GET request is sent to the backend route /auth/login, which returns a token if successful. The token is saved in the api class component as the class variable token. The React states currentUser, token, and allEvents are set using queried user information.
+      Users can now view and edit their Profile (at this point just an email change) and view and change their appointments.
+      
+## Getting Forecasts
+      Before submitting the NewAppointmentForm, the user needs to get the forecast by submitting the ZipcodeForm. This will fetch forecast data for the given zipcode and set the displayForecast state while also showing forecast results to the user through the ForecastCalendar component. Users can then submit the NewAppointmentForm, deciding on the date and location by first viewing the forecasts. 
       
 ## Appointment Creation
       User submits the NewAppointmentForm. 
-      The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments. 
+      The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments with the form data and forecast data for the appointment period.
+      The appointment and forecasts are saved to the database. 
+      The appointment is now displayed on the main calendar whenever the user is logged in.
+      
+## Viewing Appointment Details
+      The user can click on an appointment (event in calendar terms), which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting event and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form.
+      
+      
+   
       
       
       
