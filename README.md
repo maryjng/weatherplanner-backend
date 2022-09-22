@@ -49,11 +49,11 @@ This web application integrates weather forecasts based on zipcode with a typica
 
 # MODELS are divided into appointments, forecasts, user, & weatherapi
   ## APPOINTMENTS model contains functions for adding, updating, deleting, and getting individual and all appointments. There is also a getApptUser function that takes an appointment id and returns the username of its creator.
-      ### add(data): 
+      add(data): 
        - where data is { username, title, startDate, endDate, description, location } 
        - returns { id, username, title, startDate, endDate, description, location }
  
-      ### get(id): 
+      get(id): 
       - where id is the appointment id
       - returns { id, username, title, startDate, endDate, description, location } 
       - throws NotFoundError if id does not exist
@@ -101,12 +101,12 @@ This web application integrates weather forecasts based on zipcode with a typica
       - registers user. Checks if the username already exists
       - throws BadRequestError if duplicate is found
 
-      ### get(username)
+      get(username)
       - gets user by username
       - returns { id, title, startDate, endDate, description, location, { appointments } }
       - throws NotFoundError if user does not exist
 
-      ### remove(username)
+      **remove(username)**
       - deletes user by username
       - returns username
       - throws NotFoundError if user does not exist
