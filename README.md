@@ -49,7 +49,7 @@ This web application integrates weather forecasts based on zipcode with a typica
 
 #MODELS are divided into appointments, forecasts, user, & weatherapi
 ## APPOINTMENTS model contains functions for adding, updating, deleting, and getting individual and all appointments. There is also a getApptUser function that takes an appointment id and returns the username of its creator.
- add(data): 
+ ###add(data): 
  - where data is { username, title, startDate, endDate, description, location } 
  - returns { id, username, title, startDate, endDate, description, location }
  
@@ -79,34 +79,34 @@ This web application integrates weather forecasts based on zipcode with a typica
  - throws NotFoundError if id does not exist
  - basically used as part of the auth middleware to check if the current user is authorized
 
-2) FORECAST - contains functions for adding, updating, deleting, and getting individual or all forecasts.
-add(appt_id, data)
+## FORECAST - contains functions for adding, updating, deleting, and getting individual or all forecasts.
+###add(appt_id, data)
 - where appt_id is the appointment id and data is { latitude, longitude, date, max_temp, min_temp, weathercode }
 - this function is meant to take the results of the weatherApi.parseRequestForDb function. 
 - returns { appt_id, latitude, longitude, date, max_temp, min_temp, weathercode }
 - throws NotFoundError if appt_id does not exist
 
-update(appt_id, id, data)
+###update(appt_id, id, data)
 - where appt_id is the appointment id, id is the forecast id, and data can include { max_temp, min_temp, weathercode }
 - returns { appt_id, date, max_temp, min_temp, weathercode }
 - throws NotFoundError if appt_id or id does not exist
 
-3) USER - functions for authenticating, registering, getting, and removing users
-authenticate(username, password)
+## USER - functions for authenticating, registering, getting, and removing users
+###authenticate(username, password)
 - checks database to see if username/password matches
 - returns user query result
 - throws UnauthorizedError if check fails
 
-register(data) - data is { username, password, email }
+###register(data) - data is { username, password, email }
 - registers user. Checks if the username already exists
 - throws BadRequestError if duplicate is found
 
-get(username)
+###get(username)
 - gets user by username
 - returns { id, title, startDate, endDate, description, location, { appointments } }
 - throws NotFoundError if user does not exist
 
-remove(username)
+###remove(username)
 - deletes user by username
 - returns username
 - throws NotFoundError if user does not exist
