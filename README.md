@@ -126,12 +126,28 @@ APPOINTMENTS model contains functions for adding, updating, deleting, and gettin
       
 ## Getting Forecasts
       Before submitting the NewAppointmentForm, the user needs to get the forecast by submitting the ZipcodeForm. This will fetch forecast data for the given zipcode and set the displayForecast state while also showing forecast results to the user through the ForecastCalendar component. Users can then submit the NewAppointmentForm, deciding on the date and location by first viewing the forecasts. 
+      > User submits the ZipcodeForm
+      > -> form submission calls weatherApi.getForecast()
+      > -> sends GET request to route /weatherapi
+      > -> backend sends request to third party weather api for forecast data; weatherapi MODEL function handles this with getForecast and parseForecastForCalendar
+      > -> response containing forecast is sent to frontend
+      > -> React displayForecast state is updated with forecast info
+      > User will use this forecast to help determine when and where to set the appointment
       
 ## Appointment Creation
       User submits the NewAppointmentForm. 
       The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments with the form data and forecast data for the appointment period. The addAppt function from the appointments MODEL is called along with the addForecast function from the forecast MODEL.
       The appointment and forecasts are saved to the database. 
       The appointment is now displayed on the main calendar whenever the user is logged in.
+      
+      > User submits NewAppointmentForm
+      > -> form submission calls weatherApi.addAppt()
+      > -> sends POST request to route /appointments
+      > -> appointment MODEL addAppt() runs; data saved to db
+      > -> forecast MODEL addForecast() runs; data saved to db
+      > -> response containing appointment data sent back to frontend
+      > -> React allEvents state is updated with new appointment
+      > -> <Calendar /> displays new appointment
       
 ## Viewing Appointment Details / Deleting Appointment
       The user can click on an appointment, which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting appointment and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form. They can also delete the appointment by clicking "Delete Appointment".
@@ -141,7 +157,7 @@ APPOINTMENTS model contains functions for adding, updating, deleting, and gettin
      > -> weatherApi.getAppt runs 
      > -> sends GET request to route /appointments/:appt_id 
      > -> appointment MODEL getAppt() runs 
-     > -> response sent back to frontend 
+     > -> response containing appointment and forecast data sent back to frontend 
      > -> React displayForecast state is updated 
      > -> <ForecastCalendar /> component updates forecast state 
      > -> forecast and event info are displayed to user
