@@ -10,7 +10,7 @@ This web application integrates weather forecasts based on zipcode with a typica
 
 The entire application follows the usual Node.js/Express backend and React frontend approach. There is an api class (api.js) defined in the frontend that is responsible for sending requests to the backend. Backend routes will call functions from models (in models folder) and may query the database and/or respond depending on the request.
 
-# API Routes - There are four main routes - auth, users, appointments, weatherapi; 
+# BACKEND API Routes - There are four main routes - auth, users, appointments, weatherapi; 
 ### Appointments has a subroute for forecasts of a specific appointment: appointments/:appt_id/forecast 
 
 ##  AUTH - The auth route is handles token generation and user registration.
@@ -117,11 +117,11 @@ APPOINTMENTS model contains functions for adding, updating, deleting, and gettin
 # USER FLOW
 User actions and the step-by-step calling of functions are displayed here. In general, a form is submitted and the weatherApi class (api.js) in the frontend handles request sending to the backend. The backend route calls the appropriate model function(s) to query the db and manipulate data, which is sent back to the frontend as a response. Components are updated as needed according to the response.
 
-## Registration
+## Registration ** NEED UPDATE **
       User submits the register form with a username, email, and password.
       Register component calls the register function from the api class. A POST request is sent to the backend route /auth/register, which adds the user to the database and returns a token.
              
-## Login
+## Login ** NEED UPDATE **
       User submits the login form with a username and password.
       The Login component calls the login function from the api class. A GET request is sent to the backend route /auth/login, which returns a token if successful. The token is saved in the api class component as the class variable token. The React states currentUser, token, and allEvents are set using queried user information.
       Users can now view and edit their Profile (at this point just an email change) and view and change their appointments.
