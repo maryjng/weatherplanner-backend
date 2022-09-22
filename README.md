@@ -51,6 +51,7 @@ The entire application follows the usual Node.js/Express backend and React front
 
 # MODELS are divided into appointments, forecasts, user, & weatherapi
 APPOINTMENTS model contains functions for adding, updating, deleting, and getting individual and all appointments. There is also a getApptUser function that takes an appointment id and returns the username of its creator.
+      
       add(data): 
        - where data is { username, title, startDate, endDate, description, location } 
        - returns { id, username, title, startDate, endDate, description, location }
@@ -128,12 +129,14 @@ APPOINTMENTS model contains functions for adding, updating, deleting, and gettin
       
 ## Appointment Creation
       User submits the NewAppointmentForm. 
-      The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments with the form data and forecast data for the appointment period.
+      The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments with the form data and forecast data for the appointment period. The addAppt function from the appointments MODEL is called along with the addForecast function from the forecast MODEL.
       The appointment and forecasts are saved to the database. 
       The appointment is now displayed on the main calendar whenever the user is logged in.
       
 ## Viewing Appointment Details / Deleting Appointment
       The user can click on an appointment, which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting appointment and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form. They can also delete the appointment by clicking "Delete Appointment".
+      
+     > User clicks on event on <Calendar /> -> <Calendar /> onClick function -> weatherApi.getAppt runs -> sends GET request to route /appointments/:appt_id -> appointment MODEL getAppt() runs -> response sent back to frontend -> React displayForecast state is updated -> <ForecastCalendar /> component updates forecast state -> forecast and event info are displayed to user
       
 ## Editing Appointment - *** NEED UPDATE ***
 
