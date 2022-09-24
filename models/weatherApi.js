@@ -19,6 +19,7 @@ class weatherApi {
     //sends request to forecast API. Takes zipcode, tempUnit
     static async getForecast(data) {
         let { zipcode, tempUnit } = data
+        // get latitude and longitude to pass to weather api request
         let { latitude, longitude } = await getLatAndLong(zipcode)
         let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=${tempUnit}&timezone=auto`)
         return res.data;
@@ -32,6 +33,7 @@ class weatherApi {
         let { daily } = data
         let forecast = {}
 
+        // organizes data into weather, max_temp, min_temp, and date for each day in the data
         for (let x = 0; x < daily.time.length; x++) {
             let date = daily.time[x]
             let weather = WEATHERCODE[daily.weathercode[x]]
@@ -52,13 +54,16 @@ class weatherApi {
     static parseRequestForDb(data){
         let { latitude, longitude, daily } = data
         let currDate = new Date(getTodayDate())
+        //end date reflects one week forecast, which is the most the free weather api plan allows
         let endDate = new Date(getEndDate(8))
         let result = {}
 
+        // get the day of the week
         let dayIdx = daily.time.indexOf(currDate)
 
+        // pull info from data for each day of one week period
         while (currDate.getTime() < endDate.getTime()) {
-            console.log(currDate.getTime())
+            // console.log(currDate.getTime())
             let max_temp = daily.temperature_2m_max[dayIdx]
             let min_temp = daily.temperature_2m_min[dayIdx]
             let weathercode = data.daily.weathercode[dayIdx]

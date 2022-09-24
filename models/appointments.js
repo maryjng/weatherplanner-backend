@@ -39,7 +39,7 @@ class Appointments {
     //get appt by id. Throws NotFoundError if not found
     static async get(id) {
         const result = await db.query(
-            `SELECT username, title, startDate, endDate, description, location
+            `SELECT id, username, title, startDate, endDate, description, location
             FROM appointments
             WHERE id=$1`, [id]
         );

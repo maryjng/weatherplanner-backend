@@ -1,9 +1,9 @@
 const express = require("express");
-const router = new express.Router();
 const weatherApi = require("../models/weatherApi")
 const Forecast = require("../models/forecasts")
 const { NotFoundError } = require("../expressError");
 
+const router = new express.Router();
 
 //backend route for sending requests to third party weather api
 // needs zipcode, tempUnit=fahrenheit
