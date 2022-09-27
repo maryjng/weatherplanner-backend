@@ -8,6 +8,11 @@
       "minLength": 5,
       "maxLength": 20
     },
+    "currPassword": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 20
+    },
     "email": {
       "type": "string",
       "minLength": 6,
