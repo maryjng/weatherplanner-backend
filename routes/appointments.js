@@ -17,8 +17,8 @@ const router = new express.Router();
 router.post("/", ensureLoggedIn, async function(req, res, next) {
     try {
         console.log(req.body.data)
-        let results = await Appointment.add(req.body.data)
-        return res.send(results)
+        let data = await Appointment.add(req.body.data)
+        return res.json(data)
     } catch (error) {
         return next(error)
     }
@@ -30,12 +30,12 @@ router.post("/", ensureLoggedIn, async function(req, res, next) {
 // must be logged in
 router.get("/:id", ensureCorrectUser, async function(req, res, next) {
     try {
-        let appointment = await Appointment.get(req.params.id)
+        let data = await Appointment.get(req.params.id)
         const forecastRes = await Appointment.getApptForecasts(req.params.id)
         if (forecastRes.rows) {
-            appointment['forecast'] = forecastRes
+            data['forecast'] = forecastRes
         }
-        return res.json({ appointment })
+        return res.json(data)
     } catch (error) {
         return next(error)
     }
@@ -52,8 +52,8 @@ router.patch("/:id", ensureCorrectUser, async function(req, res, next) {
           const errs = validator.errors.map(e => e.stack);
           throw new BadRequestError(errs);
         }
-        const appt = await Appointment.update(req.params.id, req.body)
-        return res.json({ appt })
+        const data = await Appointment.update(req.params.id, req.body)
+        return res.json(data)
     
     } catch (error) {
         return next(error)
@@ -76,8 +76,8 @@ router.delete("/:id", ensureCorrectUser, async function(req, res, next) {
 // route to get all forecasts given appt id
 router.get("/:id/forecast", ensureCorrectUser, async function(req, res, next) {
     try {
-        const forecast = await Appointment.getApptForecasts(req.params.id)
-        return res.json({ forecast })
+        const data = await Appointment.getApptForecasts(req.params.id)
+        return res.json(data)
     } catch (error) {
         return next(error)
     }
@@ -92,8 +92,8 @@ router.post("/:id/forecast", async function(req, res, next) {
           const errs = validator.errors.map(e => e.stack);
           throw new BadRequestError(errs);
         }
-        const forecast = await Forecast.add(req.params.id, req.body)
-        return res.status(201).send(forecast)
+        const data = await Forecast.add(req.params.id, req.body)
+        return res.status(201).send(data)
     } catch (error) {
         return next(error)
     }
@@ -108,8 +108,8 @@ router.patch("/:appt_id/forecast/:id", async function(req, res, next) {
           const errs = validator.errors.map(e => e.stack);
           throw new BadRequestError(errs);
         }
-        const result = Forecast.update(req.params.appt_id, req.params.id, req.body)
-        return res.send(result)
+        const data = Forecast.update(req.params.appt_id, req.params.id, req.body)
+        return res.json(data)
     } catch (error) {
         return next(error)
     }
