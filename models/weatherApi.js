@@ -21,14 +21,21 @@ class weatherApi {
         let { zipcode, tempUnit } = data
         // get latitude and longitude to pass to weather api request
         let { latitude, longitude } = await getLatAndLong(zipcode)
-        let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=${tempUnit}&timezone=auto`)
+
+        //this because if celcius is desired unit the weather api actually requires the temperature_unit param be left out. temperature_unit=celcius causes an error. Really.
+        let tempClause = ""
+        if (tempUnit == "fahrenheit" || tempUnit == "Celcius") {
+            tempClause = `temperature_unit=fahrenheit`
+        }
+
+        let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation&daily=weathercode,temperature_2m_max,temperature_2m_min&${tempClause}&timezone=auto`)
+
         return res.data;
     }
 
     // organizes response data from getForecast to be displayed in front end 
     //     expects response from getForecast as input
-    //     returns {date: { weather, max, min}, date: ...}
-    //      }
+    //     returns {date: { weather, max, min, date, tempUnit}}
     static parseRequestForCalendar(data){
         let { daily } = data
         let forecast = {}
@@ -41,7 +48,8 @@ class weatherApi {
                 "weather": weather, 
                 "max_temp": daily.temperature_2m_max[x], 
                 "min_temp": daily.temperature_2m_min[x], 
-                "date": date
+                "date": date,
+                "tempUnit": data.daily_units.temperature_2m_max
             }
         }
         return forecast;

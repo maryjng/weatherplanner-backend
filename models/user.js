@@ -7,6 +7,7 @@ const {
   BadRequestError,
   UnauthorizedError,
 } = require("../expressError");
+const { sqlForPartialUpdate } = require("../helpers/sql")
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
@@ -93,8 +94,31 @@ class User {
       return response;
     }
 
+    //update user by username
+    static async updateUser(username, data) {
+      const { password } = data
+      //if password is sent as part of data, hash it for storage in db
+      if (password) {
+        data["password"] = await bcrypt.hash(password, BCRYPT_WORK_FACTOR)
+      }
+
+      const { setCols, values } = sqlForPartialUpdate(data, {})
+      const handleVarIdx = "$" + (values.length + 1);
+
+      const queryClause = 
+          `UPDATE users
+          SET ${setCols}
+          WHERE username=${handleVarIdx}
+          RETURNING (username, email)`
+
+      const result = await db.query(queryClause, [...values, username])
+      const res = result.rows[0]
+  
+      if (!res) throw new NotFoundError(`No user by ${username} exists.`)
+
+      return res;
+    }
       
-      //Need some auth check
     //delete user by username
       static async remove(username) {
         let result = await db.query(
@@ -108,7 +132,6 @@ class User {
     
         if (!user) throw new NotFoundError(`User does not exist: ${username}`);
       }
-
 }
 
 
