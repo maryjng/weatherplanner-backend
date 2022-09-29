@@ -9,16 +9,17 @@ const { sqlForPartialUpdate } = require("../helpers/sql")
 
 class Appointments {
     //username should come from res.locals.user.username
-    //data is { username, title, startdate, enddate, description, location }
+    //data is { username, title, startdate, enddate, description, location, zipcode }
     //startdate and enddate are timestamps (date and time)
     static async add(data) {
-        let { username, title, startDate, endDate, description, location } = data
+        let { username, title, startDate, endDate, description, location, zipcode } = data
         const result = await db.query(
             `INSERT INTO appointments
-            (username, title, startDate, endDate, description, location)
-            values ($1, $2, $3, $4, $5, $6)
-            RETURNING (id, username, title, startDate, endDate, description, location)`, [username, title, startDate, endDate, description, location]);
-        const appt = result.rows[0]
+            (username, title, startDate, endDate, description, location, zipcode)
+            values ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING (id, username, title, startDate, endDate, description, location, zipcode)`, [username, title, startDate, endDate, description, location, zipcode]);
+        let appt = result.rows[0]
+        
         return appt;
     }
 
@@ -39,7 +40,7 @@ class Appointments {
     //get appt by id. Throws NotFoundError if not found
     static async get(id) {
         const result = await db.query(
-            `SELECT id, username, title, startDate, endDate, description, location
+            `SELECT id, username, title, startDate, endDate, description, location, zipcode
             FROM appointments
             WHERE id=$1`, [id]
         );
@@ -65,17 +66,17 @@ class Appointments {
     
 
     // updates appt by id
-    // takes id and data as { username, title, startDate, endDate, description, location  }
-    // returns { username, title, startDate, endDate, description, location  }
+    // takes id and data as { username, title, startDate, endDate, description, location, zipcode  }
+    // returns { username, title, startDate, endDate, description, location, zipcode }
     static async update(id, data) {
-        const { setCols, values } = sqlForPartialUpdate(data, {})
+        const { setCols, values } = sqlForPartialUpdate(data, {startDate: "startdate", endDate: "enddate"})
         const handleVarIdx = "$" + (values.length + 1);
 
         const queryClause = 
             `UPDATE appointments
             SET ${setCols}
             WHERE id=${handleVarIdx}
-            RETURNING (username, title, startDate, endDate, description, location)`
+            RETURNING (id, username, title, startdate, enddate, description, location, zipcode)`
 
         const result = await db.query(queryClause, [...values, id])
         const appt = result.rows[0]
@@ -88,9 +89,9 @@ class Appointments {
     // deletes appt
     static async remove(id) {
         const result = await db.query(
-            `DELETE appointments
+            `DELETE FROM appointments
             WHERE id=$1
-            RETURNING name`, [id]
+            RETURNING id, title`, [id]
         );
 
         if (!result) throw new NotFoundError(`No appointment by ${id} exists.`)
