@@ -11,14 +11,14 @@ const updateForecastSchema = require("../schemas/updateForecast")
 const router = new express.Router();
 
 //save new appt in db. 
-// Expects { username, name, dateStart, dateEnd, description, location} 
-// returns { id, username, name, dateStart, dateEnd, description, location }
+// Expects { username, name, dateStart, dateEnd, description, location, zipcode} 
+// returns { id, username, name, dateStart, dateEnd, description, location, zipcode }
 // must be logged in
 router.post("/", ensureLoggedIn, async function(req, res, next) {
     try {
-        console.log(req.body.data)
-        let data = await Appointment.add(req.body.data)
-        return res.json(data)
+        console.log(req.body)
+        let data = await Appointment.add(req.body)
+        return res.status(201).json(data)
     } catch (error) {
         return next(error)
     }
@@ -47,6 +47,13 @@ router.get("/:id", ensureCorrectUser, async function(req, res, next) {
 // must be appointment creator
 router.patch("/:id", ensureCorrectUser, async function(req, res, next) {
     try {
+        // remove empty string values so jsonschema doesn't throw errors
+        for (let key in req.body) {
+            if (req.body[key] == '') {
+                delete req.body[key]
+            } 
+        }
+
         const validator = jsonschema.validate(req.body, updateApptSchema);
         if (!validator.valid) {
           const errs = validator.errors.map(e => e.stack);
@@ -61,8 +68,7 @@ router.patch("/:id", ensureCorrectUser, async function(req, res, next) {
 })
 
 
-//deletes appointment
-// NOT WORKING
+//deletes appointment by id. Returns id and title
 router.delete("/:id", ensureCorrectUser, async function(req, res, next) {
     try {
         let deleted = await Appointment.remove(req.params.id)
