@@ -11,30 +11,27 @@ const { sqlForPartialUpdate } = require("../helpers/sql")
 class Forecast {
 
     // adds a forecast to db
-    // data is { latitude, longitude, date, max_temp, min_temp, weathercode }
+    // data is { latitude, longitude, date, max_temp, min_temp, weather }
     // meant to take the results of WeatherApi.parseRequestForDb
     static async add(appt_id, data) {
         console.log(data)
-        for (let key of Object.keys(data)) {
-            console.log(data[key])
-            const { latitude, longitude, date, max_temp, min_temp, weathercode } = data[key]
-            const result = await db.query(
-                `INSERT INTO forecast
-                (appt_id, latitude, longitude, date, max_temp, min_temp, weathercode)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
-                RETURNING appt_id, latitude, longitude, date, max_temp, min_temp, weathercode`, [appt_id, latitude, longitude, date, max_temp, min_temp, weathercode]
-            );
+        const { latitude, longitude, date, max_temp, min_temp, weather } = data
+        const result = await db.query(
+            `INSERT INTO forecast
+            (appt_id, latitude, longitude, date, max_temp, min_temp, weather)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING appt_id, latitude, longitude, date, max_temp, min_temp, weather`, [appt_id, latitude, longitude, date, max_temp, min_temp, weather]
+        );
 
-            let forecast = result.rows[0]
-            if (!forecast) throw new NotFoundError(`Appointment ${id} does not exist.`)
-            }
+        let forecast = result.rows[0]
+        if (!forecast) throw new NotFoundError(`Appointment ${id} does not exist.`)
 
-        // return result;
+        return forecast;
     }
 
 
     //PATCH existing forecast by id and appt_id
-    //data can include {max_temp, min_temp, weathercode}
+    //data can include {max_temp, min_temp, weather}
     //leaving out latitude, longitude, and date
     static async update(appt_id, id, data) {
         const { setCols, values } = sqlForPartialUpdate(data, {})
@@ -45,7 +42,7 @@ class Forecast {
             `UPDATE forecast
             SET ${setCols}
             WHERE appt_id=${handleVarIdx1} AND id=${handleVarIdx2}
-            RETURNING (appt_id, date, max_temp, min_temp, weathercode)`
+            RETURNING appt_id, date, max_temp, min_temp, weather`
 
         const result = await db.query(queryClause, [...values, appt_id, id])
         const forecast = result.rows[0]

@@ -17,7 +17,7 @@ class Appointments {
             `INSERT INTO appointments
             (username, title, startDate, endDate, description, location, zipcode)
             values ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING (id, username, title, startDate, endDate, description, location, zipcode)`, [username, title, startDate, endDate, description, location, zipcode]);
+            RETURNING id, username, title, startDate, endDate, description, location, zipcode`, [username, title, startDate, endDate, description, location, zipcode]);
         let appt = result.rows[0]
         
         return appt;
@@ -76,7 +76,7 @@ class Appointments {
             `UPDATE appointments
             SET ${setCols}
             WHERE id=${handleVarIdx}
-            RETURNING (id, username, title, startdate, enddate, description, location, zipcode)`
+            RETURNING id, username, title, startdate, enddate, description, location, zipcode`
 
         const result = await db.query(queryClause, [...values, id])
         const appt = result.rows[0]
@@ -98,6 +98,7 @@ class Appointments {
 
         return result.rows[0]
     }
+
 
     
     // get all forecasts for an appt
