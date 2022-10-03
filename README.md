@@ -146,6 +146,10 @@ User actions and the step-by-step calling of functions are displayed here. In ge
       > -> form submission calls weatherApi.addAppt()
       > -> sends POST request to route /appointments
       > -> appointment MODEL addAppt() runs; data saved to db
+      > -> the appointment id is returned to the frontend
+      > -> the appointment id and form zipcode field are used to send a request to /weatherapi
+      > -> /weatherapi makes a request to the third party api and returns the data, organized by date. The frontend receives the data.
+      > -> Each date's data is sent to backend POST /appointments/id/forecast
       > -> forecast MODEL addForecast() runs; data saved to db
       > -> response containing appointment data sent back to frontend
       > -> React allEvents state is updated with new appointment
@@ -164,7 +168,14 @@ User actions and the step-by-step calling of functions are displayed here. In ge
      > -> <ForecastCalendar /> component updates forecast state 
      > -> forecast and event info are displayed to user
       
-## Editing Appointment - *** NEED UPDATE ***
+## Editing Appointment 
+      After clicking on an appointment on the Calendar, an edit button can be clicked. The EditApptForm will appear and users can submit it with at least one field filled to update the appointment. 
+      > User clicks on Edit button
+      > User submits the EditApptForm
+      > sends PATCH request to route /appointments/:appt_id
+      > appointment MODEL updateAppt() runs
+      > appointment info (all fields) is sent back to frontend as response
+      > React allEvents state is updated
 
       
       
