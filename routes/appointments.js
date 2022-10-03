@@ -18,7 +18,7 @@ router.post("/", ensureLoggedIn, async function(req, res, next) {
     try {
         console.log(req.body)
         let data = await Appointment.add(req.body)
-        return res.status(201).json(data)
+        return res.status(201).send(data)
     } catch (error) {
         return next(error)
     }
@@ -93,6 +93,7 @@ router.get("/:id/forecast", ensureCorrectUser, async function(req, res, next) {
 //route to add a forecast for the specific appt by id
 router.post("/:id/forecast", async function(req, res, next) {
     try {
+        console.log(`route ${req.body}`)
         const validator = jsonschema.validate(req.body, newForecastSchema);
         if (!validator.valid) {
           const errs = validator.errors.map(e => e.stack);
