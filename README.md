@@ -138,7 +138,7 @@ User actions and the step-by-step calling of functions are displayed here. In ge
       > JSON {"Updated": data} is returned to frontend
       
 ## Getting Forecasts
-      Before submitting the NewAppointmentForm, the user needs to get the forecast by submitting the ZipcodeForm. This will fetch forecast data for the given zipcode and set the displayForecast state while also showing forecast results to the user through the ForecastCalendar component. Users can then submit the NewAppointmentForm, deciding on the date and location by first viewing the forecasts. 
+      Before submitting the NewAppointmentForm, the user may opt to first get the forecast by submitting the ZipcodeForm. This will fetch forecast data for the given zipcode and set the displayForecast state while also showing forecast results to the user through the ForecastCalendar component. Users can then submit the NewAppointmentForm, deciding on the date and location by first viewing the forecasts. 
       > User submits the ZipcodeForm
       > form submission calls weatherApi.getForecast()
       > sends GET request to route /weatherapi
@@ -158,7 +158,7 @@ User actions and the step-by-step calling of functions are displayed here. In ge
       > sends POST request to route /appointments
       > appointment MODEL addAppt() runs; data saved to db
       > the appointment id is returned to the frontend
-      > the appointment id and form zipcode field are used to send a request to /weatherapi
+      > the form's zipcode, startdate, and enddate fields are sent in a POST request to /weatherapi
       > /weatherapi makes a request to the third party api and returns the data, organized by date. The frontend receives the data.
       > Each date's data is sent to backend POST /appointments/id/forecast
       > forecast MODEL addForecast() runs; data saved to db
