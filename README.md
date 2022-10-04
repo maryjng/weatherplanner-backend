@@ -117,23 +117,34 @@ APPOINTMENTS model contains functions for adding, updating, deleting, and gettin
 # USER FLOW
 User actions and the step-by-step calling of functions are displayed here. In general, a form is submitted and the weatherApi class (api.js) in the frontend handles request sending to the backend. The backend route calls the appropriate model function(s) to query the db and manipulate data, which is sent back to the frontend as a response. Components are updated as needed according to the response.
 
-## Registration ** NEED UPDATE **
-      User submits the register form with a username, email, and password.
-      Register component calls the register function from the api class. A POST request is sent to the backend route /auth/register, which adds the user to the database and returns a token.
+## Registration 
+      > User submits the register form with a username, email, and password.
+      > Register component calls the register function from the api class. A POST request is sent to the backend route /auth/register, which adds the user to the database and returns a token.
+      > The token and currentUser states are updated in the frontend and stored in UserContext for other components to access
              
-## Login ** NEED UPDATE **
-      User submits the login form with a username and password.
-      The Login component calls the login function from the api class. A GET request is sent to the backend route /auth/login, which returns a token if successful. The token is saved in the api class component as the class variable token. The React states currentUser, token, and allEvents are set using queried user information.
-      Users can now view and edit their Profile (at this point just an email change) and view and change their appointments.
+## Login 
+      > User submits the login form with a username and password.
+      > The Login component calls the login function from the api class. A GET request is sent to the backend route /auth/login, which returns a token if successful. 
+      > The token is saved in the api class component as the class variable token. The React states currentUser, token, and allEvents are set using queried user information.
+      > Users can now view and edit their Profile and view and change their appointments.
+      > User is redirected to calendar
+      
+## Edit Profile
+      > User submits EditProfileForm. The form can contain either a new email or password and will always require the current password to successfully change info. The new password also has to be entered in two different fields for confirmation.
+      > PATCH to backend route /users/:username
+      > jsonschema validates the data
+      > current password is authenticated
+      > User MODEL updateUser runs
+      > JSON {"Updated": data} is returned to frontend
       
 ## Getting Forecasts
       Before submitting the NewAppointmentForm, the user needs to get the forecast by submitting the ZipcodeForm. This will fetch forecast data for the given zipcode and set the displayForecast state while also showing forecast results to the user through the ForecastCalendar component. Users can then submit the NewAppointmentForm, deciding on the date and location by first viewing the forecasts. 
       > User submits the ZipcodeForm
-      > -> form submission calls weatherApi.getForecast()
-      > -> sends GET request to route /weatherapi
-      > -> backend sends request to third party weather api for forecast data; weatherapi MODEL function handles this with getForecast and parseForecastForCalendar
-      > -> response containing forecast is sent to frontend
-      > -> React displayForecast state is updated with forecast info
+      > form submission calls weatherApi.getForecast()
+      > sends GET request to route /weatherapi
+      > backend sends request to third party weather api for forecast data; weatherapi MODEL function handles this with getForecast and parseForecastForCalendar
+      > response containing forecast is sent to frontend
+      > React displayForecast state is updated with forecast info
       > User will use this forecast to help determine when and where to set the appointment
       
 ## Appointment Creation
@@ -143,30 +154,30 @@ User actions and the step-by-step calling of functions are displayed here. In ge
       The appointment is now displayed on the main calendar whenever the user is logged in.
       
       > User submits NewAppointmentForm
-      > -> form submission calls weatherApi.addAppt()
-      > -> sends POST request to route /appointments
-      > -> appointment MODEL addAppt() runs; data saved to db
-      > -> the appointment id is returned to the frontend
-      > -> the appointment id and form zipcode field are used to send a request to /weatherapi
-      > -> /weatherapi makes a request to the third party api and returns the data, organized by date. The frontend receives the data.
-      > -> Each date's data is sent to backend POST /appointments/id/forecast
-      > -> forecast MODEL addForecast() runs; data saved to db
-      > -> response containing appointment data sent back to frontend
-      > -> React allEvents state is updated with new appointment
-      > -> <Calendar /> displays new appointment
+      > form submission calls weatherApi.addAppt()
+      > sends POST request to route /appointments
+      > appointment MODEL addAppt() runs; data saved to db
+      > the appointment id is returned to the frontend
+      > the appointment id and form zipcode field are used to send a request to /weatherapi
+      > /weatherapi makes a request to the third party api and returns the data, organized by date. The frontend receives the data.
+      > Each date's data is sent to backend POST /appointments/id/forecast
+      > forecast MODEL addForecast() runs; data saved to db
+      > response containing appointment data sent back to frontend
+      > React allEvents state is updated with new appointment
+      > <Calendar /> displays new appointment
       
 ## Viewing Appointment Details / Deleting Appointment
       The user can click on an appointment, which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting appointment and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form. They can also delete the appointment by clicking "Delete Appointment".
       
      > User clicks on event on <Calendar /> 
-     > -> <Calendar /> onClick function runs
-     > -> weatherApi.getAppt runs 
-     > -> sends GET request to route /appointments/:appt_id 
-     > -> appointment MODEL getAppt() runs 
-     > -> response containing appointment and forecast data sent back to frontend 
-     > -> React displayForecast state is updated 
-     > -> <ForecastCalendar /> component updates forecast state 
-     > -> forecast and event info are displayed to user
+     > <Calendar /> onClick function runs
+     > weatherApi.getAppt runs 
+     > sends GET request to route /appointments/:appt_id 
+     > appointment MODEL getAppt() runs 
+     > response containing appointment and forecast data sent back to frontend 
+     > React displayForecast state is updated 
+     > <ForecastCalendar /> component updates forecast state 
+     > forecast and event info are displayed to user
       
 ## Editing Appointment 
       After clicking on an appointment on the Calendar, an edit button can be clicked. The EditApptForm will appear and users can submit it with at least one field filled to update the appointment. 
