@@ -77,4 +77,19 @@ describe("GET /users/:username", () => {
     });
 })
 
+describe("PATCH /users/:username", () => {
+    test("Update user details", async function() {
+        const res = await request(app).patch(`/users/testuser`).send({
+            "email": "testpatch@gmail.com",
+            "currPassword": "HASHED_PASSWORD"
+        });
+        expect(res.response).toEqual({
+            "updated": {
+                "username": "testuser",
+                "email": "testpatch@gmail.com"
+            }
+        })
+    })
+})
+
 
