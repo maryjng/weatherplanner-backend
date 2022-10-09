@@ -106,7 +106,8 @@ class Appointments {
         const result = await db.query(
             `SELECT *
             FROM forecast
-            WHERE appt_id=$1`, [id]
+            WHERE appt_id=$1
+            ORDER BY date ASC`, [id]
         );
 
         if (!result) throw new NotFoundError(`No appointment by ${id} exists.`)

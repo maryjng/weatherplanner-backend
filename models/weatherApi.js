@@ -55,18 +55,30 @@ class weatherApi {
         return forecast;
     }
 
+    //** PLEASE CLEAN THIS UP */
     // organizes response from getForecast and returns data for use with Forecast model fns
+    // start is a date object representing the start of the appointment 
+    // end is the date object for end of appointment
     // expects data to include { latitude, longitude, daily: { time, weathercode, temperature_2m_max, temperature_2m_min }}
     // startDate and endDate must be yyyy-mm-dd
     // returns { date: { latitude, longitude, max_temp, min_temp, weathercode }} for whichever dates the appointment includes
-    static parseRequestForDb(data){
+    static parseRequestForDb(start, end, data){
         let { latitude, longitude, daily } = data
-        let currDate = new Date(getTodayDate())
+        //strip down to yyyy-mm-dd then convert to date to compare
+        let currDate = new Date(start.slice(0, 10))
+        end = new Date(end.slice(0, 10))
+
         //end date reflects one week forecast, which is the most the free weather api plan allows
         let endDate = new Date(getEndDate(8))
         let result = {}
 
-        // get the day of the week
+        //if appt start date is beyond the one week forecast range, just return empty obj
+        if (currDate.getTime() > endDate.getTime()) return result;
+
+        //set endDate to whichever is sooner: the last day of the appointment (end) or the end of the one week forecast
+        endDate = endDate < end ? endDate : end 
+
+        // get the day of the week to start the loop
         let dayIdx = daily.time.indexOf(currDate)
 
         // pull info from data for each day of one week period
@@ -80,10 +92,10 @@ class weatherApi {
             result[isoDate] = {
                 latitude: latitude,
                 longitude: longitude,
-                date: isoDate,
+                date: new Date(isoDate),
                 max_temp: max_temp,
                 min_temp: min_temp,
-                weathercode: weathercode
+                weather: WEATHERCODE[weathercode]
             }
             dayIdx += 1
             currDate.setDate(currDate.getDate() + 1)
