@@ -148,6 +148,8 @@ User actions and the step-by-step calling of functions are displayed here. In ge
       > response containing forecast is sent to frontend
       > React displayForecast state is updated with forecast info
       > User will use this forecast to help determine when and where to set the appointment
+      > Users can swap between viewing F and C temperature units by clicking the F/C link.
+      
       
 ## Appointment Creation
       User submits the NewAppointmentForm. 
@@ -169,7 +171,7 @@ User actions and the step-by-step calling of functions are displayed here. In ge
       > <Calendar /> displays new appointment
       
 ## Viewing Appointment Details / Deleting Appointment
-      The user can click on an appointment, which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting appointment and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form. They can also delete the appointment by clicking "Delete Appointment".
+      The user can click on an appointment, which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting appointment and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form. They can also delete the appointment by clicking "Delete Appointment". 
       
      > User clicks on event on <Calendar /> 
      > <Calendar /> onClick function runs
@@ -180,7 +182,8 @@ User actions and the step-by-step calling of functions are displayed here. In ge
      > React displayForecast state is updated 
      > <ForecastCalendar /> component updates forecast state 
      > forecast and event info are displayed to user
-      
+     > Users can swap between viewing F and C temperature units by clicking the F/C link.
+     
 ## Editing Appointment 
       After clicking on an appointment on the Calendar, an edit button can be clicked. The EditApptForm will appear and users can submit it with at least one field filled to update the appointment. 
       > User clicks on Edit button
