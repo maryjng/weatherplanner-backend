@@ -1,5 +1,7 @@
 # weatherplanner Backend
 
+See https://github.com/maryjng/weatherplanner-frontend/blob/main/README.md for project requirements.
+
 API used: 
 https://api.open-meteo.com/v1/forecast
 
