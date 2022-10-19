@@ -161,9 +161,7 @@ Before submitting the NewAppointmentForm, the user may opt to first get the fore
 ## Appointment Creation
 ![image](https://user-images.githubusercontent.com/68235230/196733827-74e11fda-273e-4451-bb4a-89c5112a75a0.png)
 User submits the NewAppointmentForm. 
-The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments with the form data and forecast data for the appointment period. The addAppt function from the appointments MODEL is called along with the addForecast function from the forecast MODEL.
-      The appointment and forecasts are saved to the database. 
-      The appointment is now displayed on the main calendar whenever the user is logged in.
+      
       > User submits NewAppointmentForm
       > form submission calls weatherApi.addAppt()
       > sends POST request to route /appointments
