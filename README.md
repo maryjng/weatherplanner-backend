@@ -122,20 +122,23 @@ User actions and the step-by-step calling of functions are displayed here. In ge
 ## Registration 
 https://user-images.githubusercontent.com/68235230/196731175-4fbc1083-3e60-4cc8-9918-ce75d7c127f1.jpeg
 User submits the register form with a username, email, and password.
+
       > Register component calls the register function from the api class. A POST request is sent to the backend route /auth/register, which adds the user to the database and returns a token.
       > The token and currentUser states are updated in the frontend and stored in UserContext for other components to access
              
 ## Login 
-https://user-images.githubusercontent.com/68235230/196731215-02baa81e-0e54-4fdf-8588-c731771becd2.jpeg
+![image](https://user-images.githubusercontent.com/68235230/196733572-f32625c0-3808-475c-91a9-56323f21c53b.png)
 User submits the login form with a username and password.
+
       > The Login component calls the login function from the api class. A GET request is sent to the backend route /auth/login, which returns a token if successful. 
       > The token is saved in the api class component as the class variable token. The React states currentUser, token, and allEvents are set using queried user information.
       > Users can now view and edit their Profile and view and change their appointments.
       > User is redirected to calendar
       
 ## Edit Profile
-https://user-images.githubusercontent.com/68235230/196731281-2f1bab32-0063-45a1-b401-0113db4702d0.jpeg
- > User submits EditProfileForm. The form can contain either a new email or password and will always require the current password to successfully change info. The new password also has to be entered in two different fields for confirmation.
+![image](https://user-images.githubusercontent.com/68235230/196733638-2afbe52c-605d-46c1-97e5-5ebfdf086fa7.png)
+User submits EditProfileForm. The form can contain either a new email or password and will always require the current password to successfully change info. The new password also has to be entered in two different fields for confirmation.
+
       > PATCH to backend route /users/:username
       > jsonschema validates the data
       > current password is authenticated
@@ -144,6 +147,7 @@ https://user-images.githubusercontent.com/68235230/196731281-2f1bab32-0063-45a1-
       
 ## Getting Forecasts
 Before submitting the NewAppointmentForm, the user may opt to first get the forecast by submitting the ZipcodeForm. This will fetch forecast data for the given zipcode and set the displayForecast state while also showing forecast results to the user through the ForecastCalendar component. Users can then submit the NewAppointmentForm, deciding on the date and location by first viewing the forecasts. 
+
       > User submits the ZipcodeForm
       > form submission calls weatherApi.getForecast()
       > sends GET request to route /weatherapi
@@ -156,8 +160,9 @@ Before submitting the NewAppointmentForm, the user may opt to first get the fore
       
 ## Appointment Creation
 https://user-images.githubusercontent.com/68235230/196731427-b76b0c7c-427d-4965-b65f-14d0a083ea47.jpeg
-  User submits the NewAppointmentForm. 
-      The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments with the form data and forecast data for the appointment period. The addAppt function from the appointments MODEL is called along with the addForecast function from the forecast MODEL.
+
+User submits the NewAppointmentForm. 
+The component calls the addAppt function from the api class. A POST request is sent to the backend route /appointments with the form data and forecast data for the appointment period. The addAppt function from the appointments MODEL is called along with the addForecast function from the forecast MODEL.
       The appointment and forecasts are saved to the database. 
       The appointment is now displayed on the main calendar whenever the user is logged in.
       > User submits NewAppointmentForm
@@ -176,7 +181,9 @@ https://user-images.githubusercontent.com/68235230/196731427-b76b0c7c-427d-4965-
 ## Viewing Appointment Details / Deleting Appointment
 
 https://user-images.githubusercontent.com/68235230/196731870-553bd4db-0ad1-4be8-a9fc-4b384efd87f3.jpeg
+
       The user can click on an appointment, which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting appointment and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form. They can also delete the appointment by clicking "Delete Appointment".
+      
      > User clicks on event on <Calendar /> 
      > <Calendar /> onClick function runs
      > weatherApi.getAppt runs 
@@ -192,6 +199,7 @@ https://user-images.githubusercontent.com/68235230/196731870-553bd4db-0ad1-4be8-
      
 ## Editing Appointment 
 After clicking on an appointment on the Calendar, an edit button can be clicked. The EditApptForm will appear and users can submit it with at least one field filled to update the appointment. 
+
       > User clicks on Edit button
       > User submits the EditApptForm
       > sends PATCH request to route /appointments/:appt_id
