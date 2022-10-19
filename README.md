@@ -120,7 +120,7 @@ APPOINTMENTS model contains functions for adding, updating, deleting, and gettin
 User actions and the step-by-step calling of functions are displayed here. In general, a form is submitted and the weatherApi class (api.js) in the frontend handles request sending to the backend. The backend route calls the appropriate model function(s) to query the db and manipulate data, which is sent back to the frontend as a response. Components are updated as needed according to the response.
 
 ## Registration 
-      > ![4C75124B-1A27-4359-AD99-7C96C17A305A](https://user-images.githubusercontent.com/68235230/196731175-4fbc1083-3e60-4cc8-9918-ce75d7c127f1.jpeg)
+      https://user-images.githubusercontent.com/68235230/196731175-4fbc1083-3e60-4cc8-9918-ce75d7c127f1.jpeg
 User submits the register form with a username, email, and password.
       > Register component calls the register function from the api class. A POST request is sent to the backend route /auth/register, which adds the user to the database and returns a token.
       > The token and currentUser states are updated in the frontend and stored in UserContext for other components to access
