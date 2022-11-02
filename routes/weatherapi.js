@@ -6,13 +6,12 @@ const { NotFoundError } = require("../expressError");
 const router = new express.Router();
 
 //backend route for sending requests to third party weather api
-// needs zipcode, tempUnit=fahrenheit
+// needs zipcode
 // can contain startDate and endDate, with which parseRequestForDb will be used instead to return forecast data for storing in db through the forecast model
 router.post("/", async function(req, res, next) {
     try {
-        console.log(req.body.data)
-        let { tempUnit, zipcode } = req.body.data
-        let data = await weatherApi.getForecast({ "tempUnit": tempUnit, "zipcode": zipcode})
+        let { zipcode } = req.body.data
+        let data = await weatherApi.getForecast({ "zipcode": zipcode})
 
         if (!data) throw new NotFoundError("Zipcode does not exist.")
 
@@ -24,7 +23,6 @@ router.post("/", async function(req, res, next) {
         //if no dates are given, organize data for display in frontend
             result = weatherApi.parseRequestForCalendar(data)
         }
-        console.log(result)
         return res.send(result)
     } catch (error) {
         return next(error)

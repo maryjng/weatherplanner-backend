@@ -52,6 +52,25 @@ class Forecast {
         return forecast;
     }
 
+    //DELETE all forecasts for appointment by appt_id
+    static async deleteAllForecasts(appt_id) {
+        //check if the appt exists first
+        const appt = await db.query(`
+            SELECT * from appointments
+            WHERE id=$1`, [appt_id])
+
+        if (!appt.rows[0]) throw new NotFoundError(`No appt_id by ${appt_id} exists.`)
+
+        const result = await db.query(`
+            DELETE from forecast 
+            WHERE appt_id=$1
+            RETURNING appt_id`, [appt_id]
+            );
+
+        const res = result.rows[0]
+
+        return res;
+    }
 
 
 }

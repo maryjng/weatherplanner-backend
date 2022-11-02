@@ -28,10 +28,10 @@ router.post("/", ensureLoggedIn, async function(req, res, next) {
 // gets appointment by id 
 // returns { username, name, dateStart, dateEnd, description, location, {forecast} }
 // must be logged in
-router.get("/:id", ensureCorrectUser, async function(req, res, next) {
+router.get("/:appt_id", ensureCorrectUser, async function(req, res, next) {
     try {
-        let data = await Appointment.get(req.params.id)
-        const forecastRes = await Appointment.getApptForecasts(req.params.id)
+        let data = await Appointment.get(req.params.appt_id)
+        const forecastRes = await Appointment.getApptForecasts(req.params.appt_id)
         if (forecastRes.rows) {
             data['forecast'] = forecastRes
         }
@@ -45,7 +45,7 @@ router.get("/:id", ensureCorrectUser, async function(req, res, next) {
 // updates appointment 
 // returns { username, name, dateStart, dateEnd, description, location }
 // must be appointment creator
-router.patch("/:id", ensureCorrectUser, async function(req, res, next) {
+router.patch("/:appt_id", ensureCorrectUser, async function(req, res, next) {
     try {
         // remove empty string values so jsonschema doesn't throw errors
         for (let key in req.body) {
@@ -59,7 +59,7 @@ router.patch("/:id", ensureCorrectUser, async function(req, res, next) {
           const errs = validator.errors.map(e => e.stack);
           throw new BadRequestError(errs);
         }
-        const data = await Appointment.update(req.params.id, req.body)
+        const data = await Appointment.update(req.params.appt_id, req.body)
         return res.json(data)
     
     } catch (error) {
@@ -69,9 +69,9 @@ router.patch("/:id", ensureCorrectUser, async function(req, res, next) {
 
 
 //deletes appointment by id. Returns id and title
-router.delete("/:id", ensureCorrectUser, async function(req, res, next) {
+router.delete("/:appt_id", ensureCorrectUser, async function(req, res, next) {
     try {
-        let deleted = await Appointment.remove(req.params.id)
+        let deleted = await Appointment.remove(req.params.appt_id)
         return res.json({ deleted })
     } catch (error) {
         return next(error)
@@ -80,9 +80,9 @@ router.delete("/:id", ensureCorrectUser, async function(req, res, next) {
 
 /////////////////////// FORECAST ////////////////////////////////
 // route to get all forecasts given appt id
-router.get("/:id/forecast", ensureCorrectUser, async function(req, res, next) {
+router.get("/:appt_id/forecast", ensureLoggedIn, async function(req, res, next) {
     try {
-        const data = await Appointment.getApptForecasts(req.params.id)
+        const data = await Appointment.getApptForecasts(req.params.appt_id)
         return res.json(data)
     } catch (error) {
         return next(error)
@@ -91,7 +91,7 @@ router.get("/:id/forecast", ensureCorrectUser, async function(req, res, next) {
 
 
 //route to add a forecast for the specific appt by id
-router.post("/:id/forecast", async function(req, res, next) {
+router.post("/:appt_id/forecast", async function(req, res, next) {
     try {
         console.log(`route ${req.body}`)
         const validator = jsonschema.validate(req.body, newForecastSchema);
@@ -99,7 +99,7 @@ router.post("/:id/forecast", async function(req, res, next) {
           const errs = validator.errors.map(e => e.stack);
           throw new BadRequestError(errs);
         }
-        const data = await Forecast.add(req.params.id, req.body)
+        const data = await Forecast.add(req.params.appt_id, req.body)
         return res.status(201).send(data)
     } catch (error) {
         return next(error)
@@ -116,6 +116,15 @@ router.patch("/:appt_id/forecast/:id", async function(req, res, next) {
           throw new BadRequestError(errs);
         }
         const data = Forecast.update(req.params.appt_id, req.params.id, req.body)
+        return res.json(data)
+    } catch (error) {
+        return next(error)
+    }
+})
+
+router.delete("/:appt_id/forecast", async function(req, res, next) {
+    try {
+        const data = Forecast.deleteAllForecasts(req.params.appt_id)
         return res.json(data)
     } catch (error) {
         return next(error)
