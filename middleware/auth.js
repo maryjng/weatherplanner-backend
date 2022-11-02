@@ -54,10 +54,10 @@ async function ensureCorrectUser(req, res, next) {
     const user = res.locals.user;
     let apptUser = ""
 
-    if (req.params.id) {
-      apptUser = await Appointment.getApptUser(req.params.id)
+    if (req.params.appt_id) {
+      apptUser = await Appointment.getApptUser(req.params.appt_id)
     };
-
+    
     if (!(user && (user.username === req.params.username || user.username === apptUser))) {
       throw new UnauthorizedError();
     }

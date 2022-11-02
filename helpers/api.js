@@ -24,7 +24,10 @@ async function getLatAndLong(zipcode) {
 
 //date is a date object. This returns yyyy-mm-dd from it
 function dateToISO(dtObj) {
-    let date = dtObj.toISOString().slice(0, 10)
+    var day = ("0" + dtObj.getDate()).slice(-2);
+    var month = ("0" + (dtObj.getMonth() + 1)).slice(-2);
+    var year = dtObj.getFullYear()
+    var date = year + "-" + month + "-" + day;
     return date;
 }
 
