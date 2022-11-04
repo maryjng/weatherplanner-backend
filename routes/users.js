@@ -34,13 +34,22 @@ router.get("/:username", ensureCorrectUser, async function(req, res, next) {
     }
 })
 
+//removed ensureCorrectUser for now
+router.patch("/:username", async function(req, res, next) {
+    try {
+        await User.authenticate(req.body.username, req.body.currPassword)
 
-//update user route
+        let user = req.body.username
 
+        //username and password not needed after authentication
+        delete req.body.username
+        delete req.body.currPassword
 
-
-//delete user route
-
-
+        let results = await User.updateUser(user, req.body)
+        return res.send(results)
+    } catch(error) {
+        return next(error)
+    }
+})
 
 module.exports = router;
