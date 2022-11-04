@@ -159,7 +159,7 @@ Before submitting the NewAppointmentForm, the user may opt to first get the fore
       
       
 ## Appointment Creation
-<img width="1440" alt="image" src="https://user-images.githubusercontent.com/68235230/199905037-111ca9f8-7a4d-43c3-9d36-5f8ab7a05512.png">
+<img width="1440" alt="image" src="https://user-images.githubusercontent.com/68235230/199905147-93f8e88e-9d85-4b82-915f-0126084dd19f.png">
 User submits the NewAppointmentForm. 
       
       > User submits NewAppointmentForm
@@ -177,7 +177,7 @@ User submits the NewAppointmentForm.
       
 ## Viewing Appointment Details / Deleting Appointment
 
-<img width="1440" alt="image" src="https://user-images.githubusercontent.com/68235230/199904907-2f6f6930-7ab9-4515-8343-0aef3a7551ae.png">
+<img width="1440" alt="image" src="https://user-images.githubusercontent.com/68235230/199905208-d78bbc68-9c9d-4aa6-a977-b7d9a534b148.png">
 The user can click on an appointment, which will call the getForecasts function from the api class. This sends a GET request to the backend route /appointments/:appt_id, and the resulting appointment and forecast details are displayed on the page. Users will be able to change the appointment details by submitting a form. They can also delete the appointment by clicking "Delete Appointment".
 ![image](https://user-images.githubusercontent.com/68235230/196733902-9fe5a84d-d382-42d3-9ecb-1c5a452a19f9.png)
       
