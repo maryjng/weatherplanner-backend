@@ -14,7 +14,6 @@ class Forecast {
     // data is { latitude, longitude, date, max_temp, min_temp, weather }
     // meant to take the results of WeatherApi.parseRequestForDb
     static async add(appt_id, data) {
-        console.log(data)
         const { latitude, longitude, date, max_temp, min_temp, weather } = data
         const result = await db.query(
             `INSERT INTO forecast

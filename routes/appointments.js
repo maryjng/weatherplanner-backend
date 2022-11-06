@@ -5,6 +5,7 @@ const express = require("express");
 const { ensureLoggedIn, ensureCorrectUser } = require("../middleware/auth")
 const Appointment = require("../models/appointments");
 const Forecast = require("../models/forecasts")
+const newApptSchema = require("../schemas/newAppt")
 const updateApptSchema = require("../schemas/updateAppt")
 const newForecastSchema = require("../schemas/newForecast")
 const updateForecastSchema = require("../schemas/updateForecast")
@@ -12,11 +13,16 @@ const router = new express.Router();
 
 //save new appt in db. 
 // Expects { username, name, dateStart, dateEnd, description, location, zipcode} 
+// only description is optional
 // returns { id, username, name, dateStart, dateEnd, description, location, zipcode }
 // must be logged in
 router.post("/", ensureLoggedIn, async function(req, res, next) {
     try {
-        console.log(req.body)
+        const validator = jsonschema.validate(req.body, newApptSchema);
+        if (!validator.valid) {
+          const errs = validator.errors.map(e => e.stack);
+          throw new BadRequestError(errs);
+        }
         let data = await Appointment.add(req.body)
         return res.status(201).send(data)
     } catch (error) {
@@ -27,7 +33,7 @@ router.post("/", ensureLoggedIn, async function(req, res, next) {
 
 // gets appointment by id 
 // returns { username, name, dateStart, dateEnd, description, location, {forecast} }
-// must be logged in
+// must be logged in and appointment creator
 router.get("/:appt_id", ensureCorrectUser, async function(req, res, next) {
     try {
         let data = await Appointment.get(req.params.appt_id)
@@ -44,7 +50,7 @@ router.get("/:appt_id", ensureCorrectUser, async function(req, res, next) {
 
 // updates appointment 
 // returns { username, name, dateStart, dateEnd, description, location }
-// must be appointment creator
+// must be logged in and appointment creator
 router.patch("/:appt_id", ensureCorrectUser, async function(req, res, next) {
     try {
         // remove empty string values so jsonschema doesn't throw errors
@@ -53,7 +59,6 @@ router.patch("/:appt_id", ensureCorrectUser, async function(req, res, next) {
                 delete req.body[key]
             } 
         }
-
         const validator = jsonschema.validate(req.body, updateApptSchema);
         if (!validator.valid) {
           const errs = validator.errors.map(e => e.stack);
@@ -69,6 +74,7 @@ router.patch("/:appt_id", ensureCorrectUser, async function(req, res, next) {
 
 
 //deletes appointment by id. Returns id and title
+//must be logged in or appt creator
 router.delete("/:appt_id", ensureCorrectUser, async function(req, res, next) {
     try {
         let deleted = await Appointment.remove(req.params.appt_id)

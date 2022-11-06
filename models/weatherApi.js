@@ -20,11 +20,8 @@ class weatherApi {
     static async getForecast(data) {
         let { zipcode } = data
 
-        console.log(`zipcode: ${zipcode}`)
         // get latitude and longitude to pass to weather api request
         let { latitude, longitude } = await getLatAndLong(zipcode)
-
-        console.log(latitude, longitude)
 
         let res = await axios.get(`${BASE_URL}?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto`)
 
@@ -72,7 +69,9 @@ class weatherApi {
         let currDate = start.getTime() < today.getTime() ? today : start
 
         //end date reflects one week forecast, which is the most the free weather api plan allows
+        //compare last day of appointment with one week from today and set endDate as whichever is sooner
         let endDate = new Date(getEndDate(7))
+        endDate = endDate > end ? end : endDate
 
         //if appt start date is beyond the one week forecast range, just return empty obj
         if (start.getTime() > endDate.getTime()) return result;
@@ -82,7 +81,6 @@ class weatherApi {
      //BUILDING THE FORECAST RESULTS
         // get the day of the week to start the loop (data goes by yyyy-mm-dd date format, hence slice)
         let dayIdx = daily.time.indexOf(currDate.toISOString().slice(0, 10))
-        console.log(`dayIdx: ${dayIdx}`)
 
         // pull info from data for each day of one week period
         while (currDate.getTime() < endDate.getTime()) {

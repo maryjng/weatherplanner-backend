@@ -6,7 +6,7 @@
       "minLength": 1,
       "maxLength": 30
     },
-    "name": {
+    "title": {
       "type": "string"
     },
     "startDate": {
@@ -23,7 +23,7 @@
     },
     "zipcode": {
       "type": "string",
-      "minLength": 4,
+      "minLength": 5,
       "maxLength": 5
     }
   },

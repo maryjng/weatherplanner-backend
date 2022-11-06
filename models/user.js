@@ -35,7 +35,7 @@ class User {
       }
     }
 
-    throw new UnauthorizedError("Invalid username/password");
+    throw new UnauthorizedError("Invalid password");
   }
 
     // registers new user.    
@@ -109,7 +109,7 @@ class User {
           `UPDATE users
           SET ${setCols}
           WHERE username=${handleVarIdx}
-          RETURNING (username, email)`
+          RETURNING username, email`
 
       const result = await db.query(queryClause, [...values, username])
       const res = result.rows[0]

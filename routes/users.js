@@ -9,11 +9,19 @@ const User = require("../models/user");
 
 const { ensureCorrectUser } = require("../middleware/auth")
 
+const NewUserSchema = require("../schemas/userNew")
+const UserUpdateSchema = require("../schemas/userUpdate")
+
 const router = new express.Router();
 
 //save new user in db. expects { username, password, email }
 router.post("/", async function (req, res, next) {
     try {
+        const validator = jsonschema.validate(req.body, NewUserSchema);
+        if (!validator.valid) {
+          const errs = validator.errors.map(e => e.stack);
+          throw new BadRequestError(errs);
+        }
         let user = await User.register(req.body)
         const token = createToken(user);
         return res.status(201).json({ user, token });
@@ -37,8 +45,13 @@ router.get("/:username", ensureCorrectUser, async function(req, res, next) {
 //removed ensureCorrectUser for now
 router.patch("/:username", async function(req, res, next) {
     try {
-        await User.authenticate(req.body.username, req.body.currPassword)
+        const validator = jsonschema.validate(req.body, UserUpdateSchema);
+        if (!validator.valid) {
+          const errs = validator.errors.map(e => e.stack);
+          throw new BadRequestError(errs);
+        }
 
+        await User.authenticate(req.body.username, req.body.currPassword)
         let user = req.body.username
 
         //username and password not needed after authentication
@@ -46,7 +59,7 @@ router.patch("/:username", async function(req, res, next) {
         delete req.body.currPassword
 
         let results = await User.updateUser(user, req.body)
-        return res.send(results)
+        return res.json({"updated": results})
     } catch(error) {
         return next(error)
     }

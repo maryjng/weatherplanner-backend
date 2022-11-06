@@ -8,19 +8,19 @@
             "type": "date-time"
         },
         "longitude": {
-            "type": "integer"
+            "type": "number"
         },
         "latitude": {
-            "type": "integer"
+            "type": "number"
         },
         "max_temp": {
-            "type": "integer"
+            "type": "number"
         },
         "min_temp": {
-            "type": "integer"
+            "type": "number"
         },
-        "weathercode": {
-            "type": "integer"
+        "weather": {
+            "type": "text"
         }
     },
     "additionalProperties": false,

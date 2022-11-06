@@ -57,8 +57,12 @@ async function ensureCorrectUser(req, res, next) {
     if (req.params.appt_id) {
       apptUser = await Appointment.getApptUser(req.params.appt_id)
     };
-    
-    if (!(user && (user.username === req.params.username || user.username === apptUser))) {
+      
+    if (!
+      //user must be true
+      (user && 
+        // AND the below must be true, meaning at least one side of || 
+        (user.username === req.params.username || user.username === apptUser))) {
       throw new UnauthorizedError();
     }
     return next();

@@ -1,0 +1,33 @@
+{
+    "type": "object",
+    "properties": {
+        "username": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "title": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "date-time"
+        },
+        "endDate": {
+          "type": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "zipcode": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 5
+        }
+    },
+    "additionalProperties": false,
+    "required": ["title", "startDate", "endDate", "location", "zipcode"]
+  }
+  

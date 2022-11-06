@@ -22,20 +22,7 @@ class Appointments {
         
         return appt;
     }
-
-
-    //get all appts for user
-    // static async getUserAppts(username) {
-    //     const result = await db.query(
-    //         `SELECT id, username, title, start, end, description, location 
-    //         FROM appointments
-    //         WHERE username=$1`, [username]
-    //     );
-    //     if (!result.rows[0]) throw new NotFoundError(`User ${username} does not exist.`)
-
-    //     return result
-    // }
-
+    
 
     //get appt by id. Throws NotFoundError if not found
     static async get(id) {
@@ -69,21 +56,46 @@ class Appointments {
     // takes id and data as { username, title, startDate, endDate, description, location, zipcode  }
     // returns { username, title, startDate, endDate, description, location, zipcode }
     static async update(id, data) {
-        const { setCols, values } = sqlForPartialUpdate(data, {startDate: "startdate", endDate: "enddate"})
-        const handleVarIdx = "$" + (values.length + 1);
+        try {
+            let { startDate, endDate } = data
+             //make sure start date is not later than end date
+            if (startDate && endDate) {
+                if (Date.parse(startDate) > Date.parse(endDate)) throw new BadRequestError(`Start date cannot be later than end date.`)
+            } else if (startDate || endDate) {
+                let currentApptRes = await db.query(`
+                SELECT startdate, enddate
+                FROM appointments
+                WHERE id=$1`, [id])
 
-        const queryClause = 
-            `UPDATE appointments
-            SET ${setCols}
-            WHERE id=${handleVarIdx}
-            RETURNING id, username, title, startdate, enddate, description, location, zipcode`
+                let currentAppt = currentApptRes.rows[0]
 
-        const result = await db.query(queryClause, [...values, id])
-        const appt = result.rows[0]
-    
-        if (!appt) throw new NotFoundError(`No appointment by ${id} exists.`)
+                if (startDate) {
+                    if (Date.parse(startDate) > Date.parse(currentAppt.enddate)) throw new BadRequestError(`Start date cannot be later than end date.`)
+                } else if (Date.parse(endDate) < Date.parse(currentAppt.startdate)) {
+                    throw new BadRequestError(`Start date cannot be later than end date.`)
+                }
+            }
+            //end date check
 
-        return appt;
+            const { setCols, values } = sqlForPartialUpdate(data, {startDate: "startdate", endDate: "enddate"})
+            const handleVarIdx = "$" + (values.length + 1);
+
+            const queryClause = 
+                `UPDATE appointments
+                SET ${setCols}
+                WHERE id=${handleVarIdx}
+                RETURNING id, username, title, startdate, enddate, description, location, zipcode`
+
+            const result = await db.query(queryClause, [...values, id])
+            const appt = result.rows[0]
+        
+            if (!appt) throw new NotFoundError(`No appointment by ${id} exists.`)
+            return appt;
+
+        } catch (error) {
+            console.log(error)
+            return error
+        }
     }
 
     // deletes appt
