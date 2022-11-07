@@ -157,6 +157,7 @@ Before submitting the NewAppointmentForm, the user may opt to first get the fore
       > React displayForecast state is updated with forecast info
       > User will use this forecast to help determine when and where to set the appointment
       > Users can swap between viewing F and C temperature units by clicking the F/C link.
+      > Whenever the submit button is clicked, the temperature unit reverts back to fahrenheit.
       
       
 ## Appointment Creation
