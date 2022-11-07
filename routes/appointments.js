@@ -99,7 +99,6 @@ router.get("/:appt_id/forecast", ensureLoggedIn, async function(req, res, next) 
 //route to add a forecast for the specific appt by id
 router.post("/:appt_id/forecast", async function(req, res, next) {
     try {
-        console.log(`route ${req.body}`)
         const validator = jsonschema.validate(req.body, newForecastSchema);
         if (!validator.valid) {
           const errs = validator.errors.map(e => e.stack);

@@ -7,10 +7,10 @@ const { createToken } = require("../helpers/tokens")
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 
-const { ensureCorrectUser } = require("../middleware/auth")
+const { ensureCorrectUser, ensureLoggedIn } = require("../middleware/auth")
 
-const NewUserSchema = require("../schemas/userNew")
-const UserUpdateSchema = require("../schemas/userUpdate")
+const NewUserSchema = require("../schemas/newUser")
+const UserUpdateSchema = require("../schemas/updateUser")
 
 const router = new express.Router();
 
@@ -43,7 +43,7 @@ router.get("/:username", ensureCorrectUser, async function(req, res, next) {
 })
 
 //removed ensureCorrectUser for now
-router.patch("/:username", async function(req, res, next) {
+router.patch("/:username", ensureLoggedIn, async function(req, res, next) {
     try {
         const validator = jsonschema.validate(req.body, UserUpdateSchema);
         if (!validator.valid) {
@@ -51,14 +51,11 @@ router.patch("/:username", async function(req, res, next) {
           throw new BadRequestError(errs);
         }
 
-        await User.authenticate(req.body.username, req.body.currPassword)
-        let user = req.body.username
-
-        //username and password not needed after authentication
-        delete req.body.username
+        await User.authenticate(req.params.username, req.body.currPassword)
+        //current password not needed after authentication
         delete req.body.currPassword
 
-        let results = await User.updateUser(user, req.body)
+        let results = await User.updateUser(req.params.username, req.body)
         return res.json({"updated": results})
     } catch(error) {
         return next(error)
