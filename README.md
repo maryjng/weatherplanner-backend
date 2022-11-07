@@ -1,14 +1,7 @@
 # weatherplanner Backend
 
-See https://github.com/maryjng/weatherplanner-frontend/blob/main/README.md for project requirements.
 
-API used: 
-https://api.open-meteo.com/v1/forecast
-
-See calendar-schema.sql for db schema. Each forecast row is for one day and multiple forecasts for one appointment are grouped together by the appt_id column.
-
-
-Table of Contents
+## Table of Contents
 
 [Routes](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#backend-api-routes---there-are-four-main-routes---auth-users-appointments-weatherapi)
 
@@ -29,6 +22,14 @@ User Flow
 [Editing Appointments](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#editing-appointment)
 
 # General Overview
+
+See https://github.com/maryjng/weatherplanner-frontend/blob/main/README.md for project requirements.
+
+API used: 
+https://api.open-meteo.com/v1/forecast
+
+See calendar-schema.sql for db schema. Each forecast row is for one day and multiple forecasts for one appointment are grouped together by the appt_id column.
+
 This web application integrates weather forecasts based on zipcode with a typical calendar planner function to allow users to schedule their appointments based on predicted weather for the location. A one-week forecast (can be extended by paying the third party api provider) can be requested through submission of the zipcode form. Users can reference the forecast as they finalize their appointment details and submit the new appointment form. Forecasts are saved along with their connected appointment. The forecast information is called from a database and displayed whenever the user clicks on the event. Users will have an option to edit the appointment location and time or delete the appointment altogether.
 
 The entire application follows the usual Node.js/Express backend and React frontend approach. There is an api class (api.js) defined in the frontend that is responsible for sending requests to the backend. Backend routes will call functions from models (in models folder) and may query the database and respond depending on the request.
