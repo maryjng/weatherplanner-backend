@@ -7,6 +7,21 @@ https://api.open-meteo.com/v1/forecast
 
 See calendar-schema.sql for db schema. Each forecast row is for one day and multiple forecasts for one appointment are grouped together by the appt_id column.
 
+
+Table of Contents
+
+[Routes]https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#backend-api-routes---there-are-four-main-routes---auth-users-appointments-weatherapi
+
+[Models]https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#models-are-divided-into-appointments-forecasts-user--weatherapi
+
+User Flow
+[Registration]https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#registration
+[Login]https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#login
+[Edit Profile]https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#edit-profile
+[Getting Forecasts]https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#getting-forecasts
+[Viewing and Deleting Appointments]https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#viewing-appointment-details--deleting-appointment
+[Editing Appointments]https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#editing-appointment
+
 # General Overview
 This web application integrates weather forecasts based on zipcode with a typical calendar planner function to allow users to schedule their appointments based on predicted weather for the location. A one-week forecast (can be extended by paying the third party api provider) can be requested through submission of the zipcode form. Users can reference the forecast as they finalize their appointment details and submit the new appointment form. Forecasts are saved along with their connected appointment. The forecast information is called from a database and displayed whenever the user clicks on the event. Users will have an option to edit the appointment location and time or delete the appointment altogether.
 
