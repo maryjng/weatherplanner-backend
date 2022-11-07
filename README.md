@@ -16,10 +16,15 @@ Table of Contents
 
 User Flow
 [Registration](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#registration)
+
 [Login](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#login)
+
 [Edit Profile](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#edit-profile)
+
 [Getting Forecasts](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#getting-forecasts)
+
 [Viewing and Deleting Appointments](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#viewing-appointment-details--deleting-appointment)
+
 [Editing Appointments](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#editing-appointment)
 
 # General Overview
