@@ -7,7 +7,7 @@
 
 [Models](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#models-are-divided-into-appointments-forecasts-user--weatherapi)
 
-User Flow
+# User Flow
 
 [Registration](https://github.com/maryjng/weatherplanner-backend/blob/main/README.md#registration)
 
